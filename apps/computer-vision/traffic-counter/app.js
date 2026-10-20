@@ -29,7 +29,7 @@ function showCounts(mediaTime) {
   const row = frameAtTime(analysis, mediaTime);
   if (!row) return;
   people.value = selected.classes ? row.counts[selected.classes[0].key] : row.people;
-  cars.value = selected.classes ? '' : row.cars;
+  cars.value = selected.classes ? (selected.classes[1] ? row.counts[selected.classes[1].key] : '') : row.cars;
   frameLabel.textContent = `Frame ${row.frame + 1} / ${analysis.video.frameCount} · ${mediaTime.toFixed(2)}s`;
 }
 function switchView(annotated) {
@@ -69,7 +69,7 @@ async function loadAnalysis(version) {
   if (!response.ok) throw new Error('Analysis unavailable');
   const result = await response.json();
   if (version !== epoch) return false;
-  if (!validateAnalysis(result, id, selected.classes)) throw new Error('Analysis does not match the selected example');
+  if (!validateAnalysis(result, id, selected.classes, selected.inputColor)) throw new Error('Analysis does not match the selected example');
   analysis = result; toggle.disabled = processing; analyzeButton.textContent = 'Analyze again';
   showCounts(video.currentTime);
   return true;
@@ -143,9 +143,11 @@ async function chooseVideo(id) {
   document.querySelector('h1').textContent = fruit ? 'Fruit. Counted in view.' : 'People. Cars. Counted in view.';
   document.querySelector('.metric.people h2').textContent = fruit ? choice.classes[0].label : 'People';
   people.setAttribute('aria-label', fruit ? `${choice.classes[0].label} detected in this frame` : 'People detected in this frame');
-  document.querySelector('.metric.cars').hidden = fruit;
-  document.querySelector('.definition').textContent = fruit ? 'Banana detections in this frame. Zero means the detector missed or rejected the object; it does not mean the banana disappeared.' : 'Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.';
-  document.querySelector('#method').textContent = `Confidence threshold: 35% · Class-aware NMS: 0.5 IoU${fruit ? ' · COCO class 46: banana' : ''}`;
+  document.querySelector('.metric.cars').hidden = fruit && choice.classes.length < 2;
+  document.querySelector('.metric.cars h2').textContent = fruit ? (choice.classes[1]?.label || '') : 'Cars';
+  cars.setAttribute('aria-label', fruit ? `${choice.classes[1]?.label || 'Objects'} detected in this frame` : 'Cars detected in this frame');
+  document.querySelector('.definition').textContent = fruit ? `${choice.classes.map((item) => item.label).join(' and ')} detections in this frame. Occluded or unsupported fruit is not a complete stock count; zero means no accepted detection.` : 'Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.';
+  document.querySelector('#method').textContent = `Confidence threshold: 35% · Class-aware NMS: 0.5 IoU${fruit ? ` · COCO ${choice.classes.map((item) => `${item.id}: ${item.name}`).join(', ')}` : ''}`;
   renderCredits(); video.style.aspectRatio = `${choice.width} / ${choice.height}`;
   video.src = asset('source.mp4'); video.load();
   const location = new URL(window.location.href); location.searchParams.set('video', id); history.replaceState(null, '', location);
@@ -188,5 +190,5 @@ try {
   for (const item of catalog) { const option = document.createElement('option'); option.value = item.id; option.textContent = item.title; picker.append(option); }
   picker.disabled = false;
   const requested = new URL(window.location.href).searchParams.get('video');
-  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'banana-ripening');
+  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'hudson-fruit-shop');
 } catch { status.textContent = 'The video gallery could not be loaded. Check the local server and reload.'; }

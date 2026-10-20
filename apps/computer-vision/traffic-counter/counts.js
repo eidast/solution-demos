@@ -4,9 +4,9 @@ export function frameAtTime(analysis, mediaTime) {
   return analysis.frames[index];
 }
 
-export function validateAnalysis(analysis, videoId, classes) {
+export function validateAnalysis(analysis, videoId, classes, inputColor = 'RGB') {
   const video = analysis?.video;
-  const supported = analysis?.schemaVersion === 3 ? !classes : analysis?.schemaVersion === 4 && Array.isArray(classes) && classes.length > 0 && JSON.stringify(analysis.classes) === JSON.stringify(classes);
+  const supported = analysis?.schemaVersion === 3 ? !classes : analysis?.schemaVersion === 4 && Array.isArray(classes) && classes.length > 0 && JSON.stringify(analysis.classes) === JSON.stringify(classes) && (analysis.model?.inputColor || 'RGB') === inputColor;
   return supported && typeof analysis.videoId === 'string' && (!videoId || analysis.videoId === videoId) && analysis.mode === 'local-inference-replay' &&
     Number.isFinite(video?.fps) && video.fps > 0 && Number.isInteger(video.frameCount) && video.frameCount > 0 &&
     Array.isArray(analysis.frames) && analysis.frames.length === video.frameCount &&

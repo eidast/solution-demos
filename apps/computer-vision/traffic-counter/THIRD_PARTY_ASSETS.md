@@ -47,6 +47,16 @@ The unused 4K Yevropeisky escalator candidate was inspected but not added: only 
 - Source-page retrieval snapshot: `.cache/banana-source-page.html`, SHA-256 `eb4bbe8f64463deccb00d5820cef629c73e5d1875a1d5eb06e77fd182575ab49`.
 - The timelapse shows one banana changing appearance. Detection is intermittent; it is not a ripeness classifier, inventory system or multi-fruit benchmark. See VALIDATION.md.
 
+## Fruit shop HD · Hudson Greens and Goods
+
+- Title: [Hudson Greens and Goods - February 2024 - Sarah Stierch 02](https://commons.wikimedia.org/wiki/File:Hudson_Greens_and_Goods_-_February_2024_-_Sarah_Stierch_02.webm).
+- Required attribution: **Sarah Stierch (Missvain)**, [author profile](https://commons.wikimedia.org/wiki/User:Missvain), filmed 27 February 2024, uploaded 28 February 2024. The page explicitly credits Sarah Stierch (CC BY 4.0).
+- License: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/), independently of the repository's MIT code license. No endorsement implied.
+- Download: https://upload.wikimedia.org/wikipedia/commons/f/f7/Hudson_Greens_and_Goods_-_February_2024_-_Sarah_Stierch_02.webm. Original portrait 1080×1920, 24.083s; the user accepted this shorter duration for the multi-fruit shop example.
+- Original SHA-256: `b5c8fa87921f5d1a7d0b1e3c45dcc6c3c04a909b5d90da6a439e5c96faccbba0`; ignored `.cache/hudson-produce.webm`. Source-page retrieval capture `.cache/hudson-source-page.html`, SHA-256 `abc04ccc52aecaa0b0da969092fe2ba6b2c01976c94a13f6faee41b86aa32fde`.
+- Changes: first 24 seconds, resized to portrait 720×1280 at 12 FPS without cropping, audio removed. Only the analyzed derivative adds accepted orange/banana boxes and the HUD. Both derivatives retain the original's CC BY 4.0 media attribution.
+- Earlier videos remain intact. Rejected research candidates (a distant Tokyo fruit stand, aerial floating market, night-market walk) are not registered or committed; their viewpoints do not provide this close shop display. Downloaded research files stay ignored.
+
 ## YOLOX model and adapter
 
 - Model family: YOLOX-S, COCO 80-class detector; https://github.com/Megvii-BaseDetection/YOLOX.

@@ -51,3 +51,5 @@ Each example has its own ignored `data/<videoId>/` original, prepared-source man
 The secret scanner excludes installed environments, caches, bytecode and generated vision data but scans original/vendored source and detects tracked secret .env files. Git ignores all participant histories and generated vision outputs. Publication includes source, registry, attribution, tests and reproducibility instructions, not local media/results, model weights, credentials, or participant choices.
 
 The banana example adds only a committed video ID and class definition, not a request-supplied model, class list or media URL. The read-only implementation viewer includes its public configuration. Retention and private-file boundaries remain unchanged.
+
+The Hudson shop is a fifth fixed registry ID, with a committed BGR input profile and two fixed COCO classes. No request can select a color profile or arbitrary classes. Workers and player validate the saved profile (missing historical inputColor means RGB). The accepted 24-second media and all derivatives/results remain local and ignored.

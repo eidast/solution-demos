@@ -63,7 +63,7 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   assert.equal((await fetch(base + '/')).status, 200);
   assert.equal(await (await fetch(base + '/videos/san-francisco/source.mp4')).text(), 'preserved');
   assert.equal((await fetch(base + '/videos/not-registered/source.mp4')).status, 404);
-  for (const id of ['san-francisco', 'shibuya', 'retail-najaf', 'banana-ripening']) {
+  for (const id of ['san-francisco', 'shibuya', 'retail-najaf', 'banana-ripening', 'hudson-fruit-shop']) {
     const source = await fetch(base + `/videos/${id}/implementation?file=.env`);
     assert.equal(source.status, 200);
     const implementation = await source.json();
@@ -108,4 +108,15 @@ test('fruit results require the matching classes, reject traffic data and preser
   for (const counts of [{ bananas: -1 }, { bananas: 1.5 }, { people: 1 }, { bananas: 1, cars: 1 }]) {
     assert.equal(validateAnalysis({ ...result, frames: [{ frame: 0, counts }, result.frames[1]] }, 'banana-ripening', classes), false);
   }
+});
+
+
+test('shop results retain separate fruit counts and require the registered input profile', () => {
+  const classes = [{ id: 49, name: 'orange', key: 'oranges', label: 'Oranges' }, { id: 46, name: 'banana', key: 'bananas', label: 'Bananas' }];
+  const result = { schemaVersion: 4, videoId: 'hudson-fruit-shop', classes, model: { inputColor: 'BGR' }, mode: 'local-inference-replay', video: { fps: 12, frameCount: 1 }, frames: [{ frame: 0, counts: { oranges: 12, bananas: 3 } }] };
+  assert.equal(validateAnalysis(result, 'hudson-fruit-shop', classes, 'BGR'), true);
+  assert.equal(validateAnalysis(result, 'hudson-fruit-shop', classes), false);
+  assert.equal(validateAnalysis({ ...result, model: undefined }, 'hudson-fruit-shop', classes, 'BGR'), false);
+  assert.deepEqual(frameAtTime(result, 0).counts, { oranges: 12, bananas: 3 });
+  assert.equal(validateAnalysis({ ...result, frames: [{ frame: 0, counts: { oranges: 12 } }] }, 'hudson-fruit-shop', classes, 'BGR'), false);
 });

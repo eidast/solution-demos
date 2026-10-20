@@ -55,14 +55,16 @@ def acquire(path, url, expected):
         raise ValueError(f"Checksum mismatch for cached {path.name}; remove it and retry.")
 
 
-def detect(model, frame, class_names=None):
-    """Adapt the Zoo model's RGB, top-left letterbox and xywh output to Supervision."""
+def detect(model, frame, class_names=None, input_color="RGB"):
+    """Apply the registered channel order and top-left letterbox; convert xywh to xyxy."""
     class_names = CLASS_NAMES if class_names is None else class_names
     height, width = frame.shape[:2]
     scale = min(640 / width, 640 / height)
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    if input_color not in {"RGB", "BGR"}:
+        raise ValueError("Unsupported model input color")
+    pixels = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) if input_color == "RGB" else frame
     padded = np.full((640, 640, 3), 114, dtype=np.float32)
-    resized = cv2.resize(rgb, (int(width * scale), int(height * scale)))
+    resized = cv2.resize(pixels, (int(width * scale), int(height * scale)))
     padded[:resized.shape[0], :resized.shape[1]] = resized
     predictions = model.infer(padded)
     if not len(predictions):
@@ -133,7 +135,7 @@ def analyze():
         raise ValueError("The fixed detector weights are missing or invalid. Prepare the source again.")
     cv2.setNumThreads(4)
     model = YoloX(str(weights), confThreshold=THRESHOLD, nmsThreshold=0.5)
-    palette = sv.Color.from_hex("#82d7c2") if VIDEO.get("classes") else sv.ColorPalette.from_hex(["#82d7c2", "#c6cdd4", "#ffbc78"])
+    palette = sv.ColorPalette.from_hex(["#82d7c2" if index == COUNT_CLASSES[0]["id"] else "#ffbc78" for index in range(80)]) if VIDEO.get("classes") else sv.ColorPalette.from_hex(["#82d7c2", "#c6cdd4", "#ffbc78"])
     boxes = sv.BoxAnnotator(color=palette, thickness=2)
     labels = sv.LabelAnnotator(color=palette, text_scale=0.4, text_thickness=1)
     started = time.monotonic()
@@ -150,7 +152,7 @@ def analyze():
                 ok, frame = capture.read()
                 if not ok:
                     break
-                detections = detect(model, frame)
+                detections = detect(model, frame, input_color=VIDEO.get("inputColor", "RGB"))
                 counts = count_frame(detections)
                 rows = [{"class": CLASS_NAMES[int(kind)], "confidence": round(float(score), 5), "xyxy": np.round(box, 2).tolist()} for box, score, kind in zip(detections.xyxy, detections.confidence if len(detections) else [], detections.class_id if len(detections) else [])]
                 frames.append({"frame": len(frames), "time": len(frames) / FPS, **({"counts": counts} if VIDEO.get("classes") else counts), "detections": rows})
@@ -169,7 +171,7 @@ def analyze():
         ffmpeg("-i", work / "working.mp4", "-an", "-c:v", "libx264", "-crf", 20, "-pix_fmt", "yuv420p", "-movflags", "+faststart", work / "annotated.mp4")
         analysis = {
             "schemaVersion": 4 if VIDEO.get("classes") else 3, "videoId": VIDEO['id'], "mode": "local-inference-replay", "generatedAt": datetime.now(UTC).isoformat(), "source": SOURCE,
-            "model": {"name": "YOLOX-S (OpenCV Zoo, 2022nov)", "url": MODEL_URL, "sha256": MODEL_HASH, "license": "Apache-2.0", "confidenceThreshold": THRESHOLD, "nmsIouThreshold": 0.5},
+            "model": {"name": "YOLOX-S (OpenCV Zoo, 2022nov)", "url": MODEL_URL, "sha256": MODEL_HASH, "license": "Apache-2.0", "confidenceThreshold": THRESHOLD, "nmsIouThreshold": 0.5, "inputColor": VIDEO.get("inputColor", "RGB")},
             "runtime": {"supervision": sv.__version__, "opencv": cv2.__version__, "numpy": np.__version__},
             "video": {"fps": FPS, "width": WIDTH, "height": HEIGHT, "frameCount": len(frames), "duration": len(frames) / FPS},
             "countDefinition": "Accepted person and car detections in the current frame; not unique objects or cumulative traffic. Cars exclude bus, truck, bicycle, and motorcycle classes.",

@@ -2,7 +2,7 @@
 
 ## Registry and storage
 
-`videos.json` is the single committed registry consumed by Python, Node, and the browser. Only its four fixed IDs are accepted: san-francisco, shibuya, retail-najaf, banana-ripening. Source URLs and SHA-256, author/license, excerpt, native/playback dimensions, FPS, and limitations live there. No request supplies a URL, path, command, model, or arbitrary media.
+`videos.json` is the single committed registry consumed by Python, Node, and the browser. Only its five fixed IDs are accepted: san-francisco, shibuya, retail-najaf, banana-ripening, hudson-fruit-shop. Source URLs and SHA-256, author/license, excerpt, native/playback dimensions, FPS, and limitations live there. No request supplies a URL, path, command, model, or arbitrary media.
 
 Each video owns `data/<videoId>/source.mp4`, `prepared-source.json`, `annotated.mp4`, and `analysis.json`. Preparation/analysis affects only that directory. `--all` explicitly processes every registered entry. The old flat Shibuya files were moved into its directory, and its prior schema-v2 analysis retained locally as `analysis.v2.json` before recomputation; it is not an HTTP asset. San Francisco's original licensed cached source is reused to restore its original 13-second example.
 
@@ -10,7 +10,7 @@ Source preparation verifies downloads, writes the selected clean silent H.264 so
 
 ## Pipeline and count definition
 
-Every playback frame is analyzed at 12 FPS. Letterboxing uses RGB, 640×640 top-left padding 114; YOLOX-S/OpenCV confidence is >=0.35, with class-aware NMS 0.5. Traffic and retail retain valid person (0) and car (2) xyxy boxes; count each accepted box once per frame. Supervision 0.31.0 annotates boxes/labels, and the HUD shows those same counts plus the selected excerpt time/duration. There is no identity tracking, unique-visitor count, walking-state classification, or line counting. People on posters or packaging may cause false detections; occlusion and low resolution cause misses. See VALIDATION.md for retail reference checks.
+Every playback frame is analyzed at 12 FPS. Legacy examples use RGB, while the registered Hudson shop uses BGR, with 640×640 top-left padding 114; YOLOX-S/OpenCV confidence is >=0.35, with class-aware NMS 0.5. Traffic and retail retain valid person (0) and car (2) xyxy boxes; count each accepted box once per frame. Supervision 0.31.0 annotates boxes/labels, and the HUD shows those same counts plus the selected excerpt time/duration. There is no identity tracking, unique-visitor count, walking-state classification, or line counting. People on posters or packaging may cause false detections; occlusion and low resolution cause misses. See VALIDATION.md for retail reference checks.
 
 ## Saved schema v3
 
@@ -26,7 +26,7 @@ Bodyless `POST videos/<knownId>/analyze` retains the loopback-peer, matching loo
 
 ## Selection and playback
 
-The page defaults to banana-ripening, with optional known ?video= links. Selection changes the original, aspect ratio, duration, source credits and limitation. It clears old counts immediately. A monotonically increasing selection epoch prevents stale fetch, analysis, or polling responses from updating a different selection. Changing selection does not start, cancel, or redirect an active worker; progress can be resumed by selecting that video.
+The page defaults to hudson-fruit-shop, with optional known ?video= links. Selection changes the original, aspect ratio, duration, source credits and limitation. It clears old counts immediately. A monotonically increasing selection epoch prevents stale fetch, analysis, or polling responses from updating a different selection. Changing selection does not start, cancel, or redirect an active worker; progress can be resumed by selecting that video.
 
 The original loads first and never has added overlays. Saved valid results may populate synchronized cards, and the toggle switches to the same frame with preserved play/pause intent. Per-frame callbacks use decoded media time where available; seek/pause/timeupdate fallbacks clamp frame selection. The HUD is baked in only to the analyzed video, so the clean original remains available. No invented results are displayed when analysis is missing.
 
@@ -44,4 +44,10 @@ The banana entry adds an explicit classes list: COCO id 46, name banana, count k
 
 Only configured-class examples write schemaVersion 4. They retain v3 provenance/model/runtime/video/output metadata and detection rows, add the exact classes list, and replace the flat frame.people/frame.cars fields with frame.counts (e.g. {bananas: 1}). The browser requires the selected registry's exact class definitions, video ID, complete ordered frame list and nonnegative integer counters with exactly the expected keys; v3 is rejected for configured-class selections. The worker expects the selected video's schema. Source preparation and successful re-analysis retain the existing per-video invalidation/replacement behavior; caches and results remain ignored and manually retained, with no run history.
 
-The fruit UI has one metric and hides the car card. Original/HUD toggling, source viewing, global single-worker control and byte-range playback are shared with the other examples. Zero accepted detections does not establish absence: one physical banana remains in the full excerpt. This is not ripeness grading or an accuracy-certified inventory counter.
+The single-banana UI has one metric and hides the second card; the shop shows two relabeled fruit metrics. Original/HUD toggling, source viewing, global single-worker control and byte-range playback are shared with the other examples. Zero accepted detections does not establish absence: one physical banana remains in the full excerpt. This is not ripeness grading or an accuracy-certified inventory counter.
+
+## Shop input profile and v4 metadata extension
+
+The shop registry explicitly sets inputColor BGR with classes orange (49) and banana (46). This profile was evaluated before selection against the prior RGB profile on actual footage with unchanged weights, threshold and NMS. YOLOX 0.3.0's standard non-legacy ValTransform preserves OpenCV's BGR channels ([upstream](https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/yolox/data/data_augment.py#L132)), while the pinned OpenCV Zoo demo converts to RGB ([demo](https://github.com/opencv/opencv_zoo/blob/47534e27c9851bb1128ccc0102f1145e27f23f98/models/object_detection_yolox/demo.py#L103)). We record this distinction rather than claiming these paths are equivalent. The BGR shop profile produced usable orange/banana detections; no input-color migration or re-analysis is applied to earlier examples.
+
+Newly generated result model metadata adds inputColor. Missing inputColor in previous v3/v4 files retains the historical RGB meaning. The browser and worker require the registered input profile and exact configured classes; the worker also checks matching schema, ID, complete frame count, freshness and annotated output. The new shop output remains schema v4 with frame.counts.oranges and frame.counts.bananas. No retention or file replacement rules change. The two-class palette and baked HUD match the two cards; accepted boxes can represent clusters and are not guaranteed individual fruit units.

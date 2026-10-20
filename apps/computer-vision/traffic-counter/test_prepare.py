@@ -38,6 +38,21 @@ class CountingTests(unittest.TestCase):
         self.assertEqual(count_frame(detections, classes), {"bananas": 1})
         self.assertEqual(count_frame(sv.Detections.empty(), classes), {"bananas": 0})
 
+    def test_registered_input_order_preserves_legacy_rgb_and_shop_bgr(self):
+        class Model:
+            def infer(self, image):
+                self.image = image.copy()
+                return np.empty((0, 6))
+        model = Model()
+        frame = np.full((1, 2, 3), [5, 40, 200], dtype=np.uint8)
+        detect(model, frame)
+        np.testing.assert_array_equal(model.image[0, 0], [200, 40, 5])
+        detect(model, frame, input_color="BGR")
+        np.testing.assert_array_equal(model.image[0, 0], [5, 40, 200])
+        np.testing.assert_array_equal(model.image[400, 0], [114, 114, 114])
+        with self.assertRaises(ValueError):
+            detect(model, frame, input_color="unknown")
+
     def test_real_generated_counts_match_saved_detection_rows_per_video(self):
         root = Path(__file__).parent
         registry = json.loads((root / 'videos.json').read_text())
@@ -48,6 +63,7 @@ class CountingTests(unittest.TestCase):
             analysis = json.loads(path.read_text())
             self.assertEqual(analysis['schemaVersion'], 4 if video.get('classes') else 3)
             self.assertEqual(analysis['videoId'], video['id'])
+            self.assertEqual(analysis['model'].get('inputColor', 'RGB'), video.get('inputColor', 'RGB'))
             self.assertEqual(analysis['video']['frameCount'], video['fps'] * video['source']['durationSeconds'])
             for frame in analysis['frames']:
                 rows = frame['detections']

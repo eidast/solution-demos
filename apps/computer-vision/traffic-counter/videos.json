@@ -98,5 +98,43 @@
       "changes": "First 30 seconds; resized from 1920×1080 to 1280×720 at 12 FPS; silent; detections and HUD added only to the analyzed version."
     },
     "limitation": "One physical banana remains in view. The model may miss it or misclassify it as the peel darkens. A zero means no accepted banana detection, not an empty scene. This demo does not grade ripeness, count inventory or identify every kind of produce."
+  },
+  {
+    "id": "hudson-fruit-shop",
+    "title": "Fruit shop HD · Hudson Greens",
+    "description": "Browse real produce displays at Hudson Greens and Goods in Napa. Count accepted orange and banana detections across several trays.",
+    "width": 720,
+    "height": 1280,
+    "fps": 12,
+    "cacheFile": "hudson-produce.webm",
+    "inputColor": "BGR",
+    "classes": [
+      {
+        "id": 49,
+        "name": "orange",
+        "key": "oranges",
+        "label": "Oranges"
+      },
+      {
+        "id": 46,
+        "name": "banana",
+        "key": "bananas",
+        "label": "Bananas"
+      }
+    ],
+    "source": {
+      "title": "Hudson Greens and Goods - February 2024 - Sarah Stierch 02",
+      "author": "Sarah Stierch (Missvain)",
+      "authorUrl": "https://commons.wikimedia.org/wiki/User:Missvain",
+      "page": "https://commons.wikimedia.org/wiki/File:Hudson_Greens_and_Goods_-_February_2024_-_Sarah_Stierch_02.webm",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Hudson_Greens_and_Goods_-_February_2024_-_Sarah_Stierch_02.webm",
+      "sha256": "b5c8fa87921f5d1a7d0b1e3c45dcc6c3c04a909b5d90da6a439e5c96faccbba0",
+      "startSeconds": 0,
+      "durationSeconds": 24,
+      "changes": "First 24 seconds; portrait 1080×1920 resized to 720×1280 at 12 FPS without cropping; audio removed; boxes and per-class HUD added only to the analyzed version."
+    },
+    "limitation": "Counts include only accepted orange and banana detections. Other fruit such as mangoes and pears is excluded but can be misclassified. Piles, bunches, occlusion and camera movement cause misses and unstable counts. These are visible detections per frame, not complete stock or unique fruit counts."
   }
 ]
