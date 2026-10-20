@@ -72,7 +72,7 @@ export function createAnalysisJob(directory, launch = spawn, timeoutMs = 300_000
           if (code !== 0) return fail(error || 'Local analysis failed. Check the local setup or run npm run vision:prepare from Terminal, then retry.');
           try {
             const result = JSON.parse(readFileSync(analysis, 'utf8'));
-            if (result.schemaVersion !== 3 || result.videoId !== videoId || result.video?.frameCount !== total || Date.parse(result.generatedAt) < started - 1000 || !Number.isFinite(Date.parse(result.generatedAt)) || !existsSync(join(output, 'annotated.mp4'))) throw new Error('Incomplete output');
+            if (result.schemaVersion !== (video.classes ? 4 : 3) || result.videoId !== videoId || result.video?.frameCount !== total || Date.parse(result.generatedAt) < started - 1000 || !Number.isFinite(Date.parse(result.generatedAt)) || !existsSync(join(output, 'annotated.mp4'))) throw new Error('Incomplete output');
             settled = true; clearTimeout(timer); state = 'ready'; stage = 'ready'; completed = total;
           } catch { fail('The analysis did not produce a complete result. Run npm run vision:prepare and retry.'); }
         });

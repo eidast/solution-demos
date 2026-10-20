@@ -100,3 +100,5 @@ Public media/result routes are `videos/<knownId>/{source.mp4,annotated.mp4,analy
 See [schema v3 and per-video retention](../apps/computer-vision/traffic-counter/TECHNICAL.md), [footage/model rights](../apps/computer-vision/traffic-counter/THIRD_PARTY_ASSETS.md), and [retail manual checks](../apps/computer-vision/traffic-counter/VALIDATION.md). Jev contracts remain unchanged.
 
 The computer vision gallery includes a read-only source modal for the selected video. Its fixed implementation endpoint includes public registry configuration, shared detector/HUD/player/backend source and the adapter license; it does not expose private manifests, credentials or arbitrary files.
+
+The gallery also includes HD banana ripening (30 seconds, mauiwowialoha, CC BY 3.0). It uses local YOLOX-S class 46 and Supervision with the existing model, one banana counter and a baked HUD. Configured fruit outputs use schema v4; existing people/car examples keep v3. See the vision technical design for fields and unchanged per-video retention. Detection misses are documented; this is not ripeness grading.

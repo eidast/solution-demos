@@ -28,7 +28,8 @@ function showCounts(mediaTime) {
   if (pendingSwitch || video.seeking || video.readyState < 2 || !analysis) return;
   const row = frameAtTime(analysis, mediaTime);
   if (!row) return;
-  people.value = row.people; cars.value = row.cars;
+  people.value = selected.classes ? row.counts[selected.classes[0].key] : row.people;
+  cars.value = selected.classes ? '' : row.cars;
   frameLabel.textContent = `Frame ${row.frame + 1} / ${analysis.video.frameCount} · ${mediaTime.toFixed(2)}s`;
 }
 function switchView(annotated) {
@@ -68,7 +69,7 @@ async function loadAnalysis(version) {
   if (!response.ok) throw new Error('Analysis unavailable');
   const result = await response.json();
   if (version !== epoch) return false;
-  if (!validateAnalysis(result, id)) throw new Error('Analysis does not match the selected example');
+  if (!validateAnalysis(result, id, selected.classes)) throw new Error('Analysis does not match the selected example');
   analysis = result; toggle.disabled = processing; analyzeButton.textContent = 'Analyze again';
   showCounts(video.currentTime);
   return true;
@@ -137,6 +138,14 @@ async function chooseVideo(id) {
   document.querySelector('#clipInfo').textContent = `${choice.source.durationSeconds}-second excerpt · ${choice.width}×${choice.height} · Silent`;
   document.querySelector('#limitation').textContent = choice.limitation;
   document.querySelector('#pipelineDescription').textContent = `Analyze video runs YOLOX-S and Supervision locally on this example’s ${choice.fps * choice.source.durationSeconds} frames at ${choice.fps} FPS. Each video keeps its own source, HUD and results.`;
+  const fruit = !!choice.classes;
+  document.title = fruit ? 'Fruit Counter · Solution Demos' : 'People & Cars · Solution Demos';
+  document.querySelector('h1').textContent = fruit ? 'Fruit. Counted in view.' : 'People. Cars. Counted in view.';
+  document.querySelector('.metric.people h2').textContent = fruit ? choice.classes[0].label : 'People';
+  people.setAttribute('aria-label', fruit ? `${choice.classes[0].label} detected in this frame` : 'People detected in this frame');
+  document.querySelector('.metric.cars').hidden = fruit;
+  document.querySelector('.definition').textContent = fruit ? 'Banana detections in this frame. Zero means the detector missed or rejected the object; it does not mean the banana disappeared.' : 'Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.';
+  document.querySelector('#method').textContent = `Confidence threshold: 35% · Class-aware NMS: 0.5 IoU${fruit ? ' · COCO class 46: banana' : ''}`;
   renderCredits(); video.style.aspectRatio = `${choice.width} / ${choice.height}`;
   video.src = asset('source.mp4'); video.load();
   const location = new URL(window.location.href); location.searchParams.set('video', id); history.replaceState(null, '', location);
@@ -179,5 +188,5 @@ try {
   for (const item of catalog) { const option = document.createElement('option'); option.value = item.id; option.textContent = item.title; picker.append(option); }
   picker.disabled = false;
   const requested = new URL(window.location.href).searchParams.get('video');
-  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'retail-najaf');
+  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'banana-ripening');
 } catch { status.textContent = 'The video gallery could not be loaded. Check the local server and reload.'; }

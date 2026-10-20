@@ -26,7 +26,9 @@ SOURCE = VIDEO['source']
 DATA = ROOT / "data" / VIDEO['id']
 FPS, WIDTH, HEIGHT = VIDEO['fps'], VIDEO['width'], VIDEO['height']
 THRESHOLD = 0.35
-CLASS_NAMES = {0: "person", 2: "car"}
+DEFAULT_CLASSES = [{"id": 0, "name": "person", "key": "people", "label": "People"}, {"id": 2, "name": "car", "key": "cars", "label": "Cars"}]
+COUNT_CLASSES = DEFAULT_CLASSES
+CLASS_NAMES = {item['id']: item['name'] for item in COUNT_CLASSES}
 MODEL_URL = "https://media.githubusercontent.com/media/opencv/opencv_zoo/47534e27c9851bb1128ccc0102f1145e27f23f98/models/object_detection_yolox/object_detection_yolox_2022nov.onnx"
 MODEL_HASH = "c5c2d13e59ae883e6af3b45daea64af4833a4951c92d116ec270d9ddbe998063"
 
@@ -53,8 +55,9 @@ def acquire(path, url, expected):
         raise ValueError(f"Checksum mismatch for cached {path.name}; remove it and retry.")
 
 
-def detect(model, frame):
+def detect(model, frame, class_names=None):
     """Adapt the Zoo model's RGB, top-left letterbox and xywh output to Supervision."""
+    class_names = CLASS_NAMES if class_names is None else class_names
     height, width = frame.shape[:2]
     scale = min(640 / width, 640 / height)
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -64,7 +67,7 @@ def detect(model, frame):
     predictions = model.infer(padded)
     if not len(predictions):
         return sv.Detections.empty()
-    predictions = predictions[np.isin(predictions[:, 5].astype(int), list(CLASS_NAMES))]
+    predictions = predictions[np.isin(predictions[:, 5].astype(int), list(class_names))]
     if not len(predictions):
         return sv.Detections.empty()
     xyxy = predictions[:, :4].copy() / scale
@@ -75,9 +78,10 @@ def detect(model, frame):
     return sv.Detections(xyxy=xyxy[valid], confidence=predictions[valid, 4], class_id=predictions[valid, 5].astype(int))
 
 
-def count_frame(detections):
+def count_frame(detections, classes=None):
+    classes = COUNT_CLASSES if classes is None else classes
     ids = detections.class_id if detections.class_id is not None else np.array([])
-    return {"people": int(np.sum(ids == 0)), "cars": int(np.sum(ids == 2))}
+    return {item['key']: int(np.sum(ids == item['id'])) for item in classes}
 
 
 def ffmpeg(*arguments):
@@ -93,9 +97,12 @@ def draw_hud(frame, counts, frame_index):
     overlay = frame.copy()
     cv2.rectangle(overlay, (16, 16), (365, 122), (30, 24, 17), -1)
     cv2.addWeighted(overlay, 0.88, frame, 0.12, 0, frame)
-    cv2.line(frame, (188, 51), (188, 108), (82, 73, 61), 1)
+    if len(COUNT_CLASSES) > 1:
+        cv2.line(frame, (188, 51), (188, 108), (82, 73, 61), 1)
     cv2.putText(frame, f"VISION HUD   {frame_index / FPS:05.2f}s / {SOURCE['durationSeconds']}s", (30, 39), cv2.FONT_HERSHEY_SIMPLEX, .48, (205, 215, 220), 1)
-    for x, name, value, color in [(30, "PEOPLE", counts['people'], (194, 215, 130)), (208, "CARS", counts['cars'], (120, 188, 255))]:
+    for index, item in enumerate(COUNT_CLASSES):
+        x, name, value = 30 + index * 178, item['label'].upper(), counts[item['key']]
+        color = (194, 215, 130) if index == 0 else (120, 188, 255)
         cv2.putText(frame, name, (x, 65), cv2.FONT_HERSHEY_SIMPLEX, .43, (205, 215, 220), 1)
         cv2.putText(frame, str(value), (x, 106), cv2.FONT_HERSHEY_SIMPLEX, 1.15, color, 2)
     return frame
@@ -126,7 +133,7 @@ def analyze():
         raise ValueError("The fixed detector weights are missing or invalid. Prepare the source again.")
     cv2.setNumThreads(4)
     model = YoloX(str(weights), confThreshold=THRESHOLD, nmsThreshold=0.5)
-    palette = sv.ColorPalette.from_hex(["#82d7c2", "#c6cdd4", "#ffbc78"])
+    palette = sv.Color.from_hex("#82d7c2") if VIDEO.get("classes") else sv.ColorPalette.from_hex(["#82d7c2", "#c6cdd4", "#ffbc78"])
     boxes = sv.BoxAnnotator(color=palette, thickness=2)
     labels = sv.LabelAnnotator(color=palette, text_scale=0.4, text_thickness=1)
     started = time.monotonic()
@@ -146,7 +153,7 @@ def analyze():
                 detections = detect(model, frame)
                 counts = count_frame(detections)
                 rows = [{"class": CLASS_NAMES[int(kind)], "confidence": round(float(score), 5), "xyxy": np.round(box, 2).tolist()} for box, score, kind in zip(detections.xyxy, detections.confidence if len(detections) else [], detections.class_id if len(detections) else [])]
-                frames.append({"frame": len(frames), "time": len(frames) / FPS, **counts, "detections": rows})
+                frames.append({"frame": len(frames), "time": len(frames) / FPS, **({"counts": counts} if VIDEO.get("classes") else counts), "detections": rows})
                 annotated = boxes.annotate(frame.copy(), detections=detections)
                 annotated = labels.annotate(annotated, detections=detections, labels=[f"{row['class']} {row['confidence']:.0%}" for row in rows])
                 writer.write(draw_hud(annotated, counts, len(frames) - 1))
@@ -161,7 +168,7 @@ def analyze():
         progress("encoding", len(frames))
         ffmpeg("-i", work / "working.mp4", "-an", "-c:v", "libx264", "-crf", 20, "-pix_fmt", "yuv420p", "-movflags", "+faststart", work / "annotated.mp4")
         analysis = {
-            "schemaVersion": 3, "videoId": VIDEO['id'], "mode": "local-inference-replay", "generatedAt": datetime.now(UTC).isoformat(), "source": SOURCE,
+            "schemaVersion": 4 if VIDEO.get("classes") else 3, "videoId": VIDEO['id'], "mode": "local-inference-replay", "generatedAt": datetime.now(UTC).isoformat(), "source": SOURCE,
             "model": {"name": "YOLOX-S (OpenCV Zoo, 2022nov)", "url": MODEL_URL, "sha256": MODEL_HASH, "license": "Apache-2.0", "confidenceThreshold": THRESHOLD, "nmsIouThreshold": 0.5},
             "runtime": {"supervision": sv.__version__, "opencv": cv2.__version__, "numpy": np.__version__},
             "video": {"fps": FPS, "width": WIDTH, "height": HEIGHT, "frameCount": len(frames), "duration": len(frames) / FPS},
@@ -170,6 +177,9 @@ def analyze():
             "outputs": {"source.mp4": {"sha256": manifest['sha256']}, "annotated.mp4": {"sha256": digest(work / "annotated.mp4")}},
             "frames": frames,
         }
+        if VIDEO.get("classes"):
+            analysis['classes'] = COUNT_CLASSES
+            analysis['countDefinition'] = "Accepted detections per configured class in the current frame; not unique items, inventory, or ripeness assessment. Zero means no accepted detection."
         (work / "analysis.json").write_text(json.dumps(analysis, separators=(",", ":")) + "\n")
         for name in ["annotated.mp4", "analysis.json"]:
             os.replace(work / name, DATA / name)
@@ -177,7 +187,7 @@ def analyze():
 
 
 def main():
-    global VIDEO, SOURCE, DATA, FPS, WIDTH, HEIGHT
+    global VIDEO, SOURCE, DATA, FPS, WIDTH, HEIGHT, COUNT_CLASSES, CLASS_NAMES
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--source-only", action="store_true", help="Prepare clean video and cached weights without inference")
@@ -190,6 +200,8 @@ def main():
     CACHE.mkdir(exist_ok=True)
     for selected in VIDEOS if args.all else [next(video for video in VIDEOS if video['id'] == args.video)]:
         VIDEO, SOURCE = selected, selected['source']
+        COUNT_CLASSES = selected.get('classes', DEFAULT_CLASSES)
+        CLASS_NAMES = {item['id']: item['name'] for item in COUNT_CLASSES}
         FPS, WIDTH, HEIGHT = selected['fps'], selected['width'], selected['height']
         DATA = ROOT / "data" / selected['id']
         DATA.mkdir(parents=True, exist_ok=True)

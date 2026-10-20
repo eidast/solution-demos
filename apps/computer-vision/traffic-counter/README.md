@@ -1,9 +1,10 @@
-# Video Gallery · People & Cars
+# Video Gallery · Object Counters
 
 Three independent Creative Commons examples share the local YOLOX-S/Supervision player:
 
 | Example | Excerpt | Source / playback dimensions | License |
 | --- | --- | --- | --- |
+| Fruit HD · Banana ripening | Source seconds 0–30 (30 seconds) | 1920×1080 / 1280×720 | CC BY 3.0 |
 | San Francisco · Street traffic | Source seconds 21–34 (13 seconds) | 1920×1080 / 1280×720 | CC BY 3.0 |
 | Shibuya · Crossing | Source seconds 0–45 (45 seconds) | 640×480 / 960×720, original 4:3 retained | CC BY 2.0 |
 | Retail HD · Al Basheer | Source seconds 6–51 (45 seconds) | Native 1280×720 / 1280×720 | CC BY 3.0 |
@@ -20,7 +21,7 @@ npm run vision:source
 npm start
 ```
 
-Open `/computer-vision/traffic-counter/`. **Video example** selects a video, initially HD retail. **Analyze video** calculates that video's detections locally and generates its HUD. Progress is shown while processing. **Show detections & HUD** switches between clean original and analyzed video at the same moment. Each example can also be linked as `?video=san-francisco`, `?video=shibuya`, or `?video=retail-najaf`.
+Open `/computer-vision/traffic-counter/`. **Video example** selects a video, initially HD banana ripening. **Analyze video** calculates that video's detections locally and generates its HUD. Progress is shown while processing. **Show detections & HUD** switches between clean original and analyzed video at the same moment. Each example can also be linked as `?video=san-francisco`, `?video=shibuya`, `?video=retail-najaf`, or `?video=banana-ripening`.
 
 Only one worker runs across the gallery. You can watch another original or select the active example to follow progress. Reloading reconnects to running analysis. The HUD is encoded into the analyzed MP4 and remains visible in native fullscreen. Results are calculated before result playback, not live inference during playback.
 
@@ -45,6 +46,10 @@ npm run test:vision
 npm run check:secrets
 ```
 
-See [TECHNICAL.md](TECHNICAL.md) for schema v3, selection safety, the globally bounded worker, and per-video retention.
+See [TECHNICAL.md](TECHNICAL.md) for schemas v3/v4, selection safety, the globally bounded worker, and per-video retention.
 
 The **View source code** button opens a keyboard-accessible modal for the selected video. Choose its registry configuration, Python detector/HUD pipeline, browser player/count logic, backend, or the YOLOX adapter and its license. These are the current local implementation files; every video uses the shared pipeline with its own configuration. Close or Escape returns to the demo.
+
+## Fruit counting
+
+**Fruit HD · Banana ripening** uses the same YOLOX-S model and Supervision pipeline with COCO class 46 (`banana`). Its single counter and baked HUD show accepted banana detections per frame; people and cars are excluded. The physical banana remains visible even when the detector returns zero. Of 360 frames in the reference run, 84 have one banana detection and 276 have zero; no frame has more than one. This is a detection demonstration with substantial misses, not production inventory or ripeness grading. The threshold remains 35%. Configurable-class outputs use schema v4 (`classes`, per-frame `counts`); the three traffic/retail examples retain schema v3. See TECHNICAL.md and VALIDATION.md.

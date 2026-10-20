@@ -67,5 +67,36 @@
       "changes": "Excerpt at 6–51 seconds; native HD 1280×720 retained at 12 FPS; audio removed; detections and HUD added only to the analyzed version."
     },
     "limitation": "Camera movement, scene cuts, shelves, occlusion and people printed on packaging can affect detections. These are per-frame model estimates, not unique shoppers."
+  },
+  {
+    "id": "banana-ripening",
+    "title": "Fruit HD · Banana ripening",
+    "description": "A 30-second HD timelapse of a banana ripening. Count banana detections while its appearance changes.",
+    "width": 1280,
+    "height": 720,
+    "fps": 12,
+    "cacheFile": "banana-ripening.webm",
+    "classes": [
+      {
+        "id": 46,
+        "name": "banana",
+        "key": "bananas",
+        "label": "Bananas"
+      }
+    ],
+    "source": {
+      "title": "Time Lapse Banana Ripening",
+      "author": "mauiwowialoha",
+      "page": "https://commons.wikimedia.org/wiki/File:Time_Lapse_Banana_Ripening.webm",
+      "authorUrl": "https://www.youtube.com/user/mauiwowialoha",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Time_Lapse_Banana_Ripening.webm",
+      "sha256": "4cfe817d09dc96c5846d2577664044fd56ac97475b59b79c10eac6b00d62c7a1",
+      "startSeconds": 0,
+      "durationSeconds": 30,
+      "changes": "First 30 seconds; resized from 1920×1080 to 1280×720 at 12 FPS; silent; detections and HUD added only to the analyzed version."
+    },
+    "limitation": "One physical banana remains in view. The model may miss it or misclassify it as the peel darkens. A zero means no accepted banana detection, not an empty scene. This demo does not grade ripeness, count inventory or identify every kind of produce."
   }
 ]

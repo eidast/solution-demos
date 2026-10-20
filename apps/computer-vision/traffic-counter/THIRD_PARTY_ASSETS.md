@@ -37,6 +37,16 @@ All three entries remain available. Exact download URLs, hashes and modification
 
 The unused 4K Yevropeisky escalator candidate was inspected but not added: only 20.6 seconds long and not suitable for the requested walking-retail scene. No candidate footage is included in Git. Licenses above apply to media independently of the repository MIT license; retain attribution/license and modification notes when sharing derivatives.
 
+## Fruit HD · Banana ripening
+
+- Source: [Time Lapse Banana Ripening](https://commons.wikimedia.org/wiki/File:Time_Lapse_Banana_Ripening.webm), by [mauiwowialoha](https://www.youtube.com/user/mauiwowialoha), 12 May 2015. Original YouTube: https://www.youtube.com/watch?v=EAjPKdCPFWM.
+- License: [CC BY 3.0 Unported](https://creativecommons.org/licenses/by/3.0/); Commons records INeverCry's license review on 15 May 2016. No endorsement implied.
+- Original: 1920×1080, 30.03 seconds; https://upload.wikimedia.org/wikipedia/commons/d/d7/Time_Lapse_Banana_Ripening.webm.
+- SHA-256: `4cfe817d09dc96c5846d2577664044fd56ac97475b59b79c10eac6b00d62c7a1`. Cached as `.cache/banana-ripening.webm`; not committed.
+- Changes: first 30 seconds, resized to 1280×720 at 12 FPS, silent H.264. Only the analyzed derivative has boxes and the banana HUD. The derivative retains CC BY 3.0 media attribution independently of the project's MIT code license.
+- Source-page retrieval snapshot: `.cache/banana-source-page.html`, SHA-256 `eb4bbe8f64463deccb00d5820cef629c73e5d1875a1d5eb06e77fd182575ab49`.
+- The timelapse shows one banana changing appearance. Detection is intermittent; it is not a ripeness classifier, inventory system or multi-fruit benchmark. See VALIDATION.md.
+
 ## YOLOX model and adapter
 
 - Model family: YOLOX-S, COCO 80-class detector; https://github.com/Megvii-BaseDetection/YOLOX.

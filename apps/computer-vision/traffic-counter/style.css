@@ -60,3 +60,5 @@ select:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
 body:has(#sourceDialog[open]) { overflow: hidden; }
 
 @media (max-width: 480px) { .source-heading h2 { font-size: 1rem; margin: 0; } .source-heading button { padding: 9px 12px; } #sourceDescription, #sourceStatus { font-size: .73rem; margin: 10px 0; } .source-code { max-height: 38dvh; } }
+
+.metric[hidden] { display: none; }

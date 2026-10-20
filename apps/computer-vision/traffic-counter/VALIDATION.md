@@ -22,3 +22,11 @@ These two references do not establish full-video precision, recall, tracking acc
 ## Preserved examples
 
 San Francisco retains its original 13-second excerpt (156 frames), with the clean source and new schema-v3 HUD result in its own folder. Shibuya retains its 45-second excerpt (540 frames), with 4:3 preserved and documented low-resolution undercounting. Preparing/analyzing another selected example does not replace these files. All three examples use real inference; no count is fabricated for missing analysis.
+
+## Banana ripening reference run
+
+Source: mauiwowialoha's Time Lapse Banana Ripening (CC BY 3.0), pinned in videos.json. First 30 seconds, HD 1280×720 playback at 12 FPS. Local YOLOX-S and Supervision processed all 360 frames in 31.32 seconds. Counts use the unchanged 0.35 confidence threshold and class-aware NMS at 0.5 IoU.
+
+One physical banana remains visible throughout the timelapse. Reference frame 60 (5.00s) has one accepted banana detection (confidence 0.67646). Frame 180 (15.00s) has one accepted detection (0.35488). Frames 0, 300 (25.00s), and 348 (29.00s) have zero accepted detections despite the visible banana. The peel's changing appearance and close framing affect this detector. The full output contains 84 frames with one banana detection and 276 frames with zero; none has more than one. These are observed results of one controlled local run, not a certified accuracy or a dataset benchmark. No threshold tuning or fabricated boxes/counters were applied.
+
+The card, HUD and saved schema-v4 per-frame counts are derived from the same accepted rows. Original footage, caches and result files remain local/ignored. Existing traffic/retail results remain intact.

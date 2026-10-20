@@ -27,6 +27,17 @@ class CountingTests(unittest.TestCase):
         np.testing.assert_allclose(detections.xyxy, [[20, 40, 220, 140], [1200, 600, 1280, 720]])
         self.assertEqual(model.shape, (640, 640, 3))
 
+    def test_fruit_counting_filters_people_and_converts_banana_boxes(self):
+        classes = [{"id": 46, "name": "banana", "key": "bananas", "label": "Bananas"}]
+        class Model:
+            def infer(self, image):
+                return np.array([[20, 30, 50, 40, .8, 46], [0, 0, 50, 50, .9, 0]], dtype=float)
+        detections = detect(Model(), np.zeros((720, 1280, 3), dtype=np.uint8), {46: "banana"})
+        np.testing.assert_array_equal(detections.class_id, [46])
+        np.testing.assert_allclose(detections.xyxy, [[40, 60, 140, 140]])
+        self.assertEqual(count_frame(detections, classes), {"bananas": 1})
+        self.assertEqual(count_frame(sv.Detections.empty(), classes), {"bananas": 0})
+
     def test_real_generated_counts_match_saved_detection_rows_per_video(self):
         root = Path(__file__).parent
         registry = json.loads((root / 'videos.json').read_text())
@@ -35,13 +46,18 @@ class CountingTests(unittest.TestCase):
             if not path.exists():
                 self.skipTest('Prepare every example for the real-output audit')
             analysis = json.loads(path.read_text())
-            self.assertEqual(analysis['schemaVersion'], 3)
+            self.assertEqual(analysis['schemaVersion'], 4 if video.get('classes') else 3)
             self.assertEqual(analysis['videoId'], video['id'])
             self.assertEqual(analysis['video']['frameCount'], video['fps'] * video['source']['durationSeconds'])
             for frame in analysis['frames']:
                 rows = frame['detections']
-                self.assertEqual(frame['people'], sum(row['class'] == 'person' for row in rows))
-                self.assertEqual(frame['cars'], sum(row['class'] == 'car' for row in rows))
+                if video.get('classes'):
+                    self.assertEqual(analysis['classes'], video['classes'])
+                    for item in video['classes']:
+                        self.assertEqual(frame['counts'][item['key']], sum(row['class'] == item['name'] for row in rows))
+                else:
+                    self.assertEqual(frame['people'], sum(row['class'] == 'person' for row in rows))
+                    self.assertEqual(frame['cars'], sum(row['class'] == 'car' for row in rows))
                 self.assertTrue(all(row['confidence'] >= .35 for row in rows))
 
 

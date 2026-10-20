@@ -63,7 +63,7 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   assert.equal((await fetch(base + '/')).status, 200);
   assert.equal(await (await fetch(base + '/videos/san-francisco/source.mp4')).text(), 'preserved');
   assert.equal((await fetch(base + '/videos/not-registered/source.mp4')).status, 404);
-  for (const id of ['san-francisco', 'shibuya', 'retail-najaf']) {
+  for (const id of ['san-francisco', 'shibuya', 'retail-najaf', 'banana-ripening']) {
     const source = await fetch(base + `/videos/${id}/implementation?file=.env`);
     assert.equal(source.status, 200);
     const implementation = await source.json();
@@ -93,5 +93,19 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   assert.equal((await fetch(base + '/', { method: 'POST' })).status, 405);
   for (const path of ['/.cache/yolox-s.onnx', '/.venv/pyvenv.cfg', '/prepare.py', '/third_party/yolox.py', '/data/source.mp4', '/requirements.txt', '/analysis-job.js', '/prepared-source.json', '/data/prepared-source.json']) {
     assert.equal((await fetch(base + path)).status, 404, path);
+  }
+});
+
+
+test('fruit results require the matching classes, reject traffic data and preserve frame semantics', () => {
+  const classes = [{ id: 46, name: 'banana', key: 'bananas', label: 'Bananas' }];
+  const result = { schemaVersion: 4, videoId: 'banana-ripening', classes, mode: 'local-inference-replay', video: { fps: 12, frameCount: 2 }, frames: [{ frame: 0, counts: { bananas: 1 } }, { frame: 1, counts: { bananas: 0 } }] };
+  assert.equal(validateAnalysis(result, 'banana-ripening', classes), true);
+  assert.equal(frameAtTime(result, 1 / 12).counts.bananas, 0);
+  assert.equal(validateAnalysis(result, 'shibuya'), false);
+  assert.equal(validateAnalysis(result, 'banana-ripening', [{ ...classes[0], id: 47 }]), false);
+  assert.equal(validateAnalysis({ ...result, schemaVersion: 3 }, 'banana-ripening', classes), false);
+  for (const counts of [{ bananas: -1 }, { bananas: 1.5 }, { people: 1 }, { bananas: 1, cars: 1 }]) {
+    assert.equal(validateAnalysis({ ...result, frames: [{ frame: 0, counts }, result.frames[1]] }, 'banana-ripening', classes), false);
   }
 });
