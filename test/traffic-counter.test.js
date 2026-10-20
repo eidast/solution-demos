@@ -63,7 +63,7 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   assert.equal((await fetch(base + '/')).status, 200);
   assert.equal(await (await fetch(base + '/videos/san-francisco/source.mp4')).text(), 'preserved');
   assert.equal((await fetch(base + '/videos/not-registered/source.mp4')).status, 404);
-  for (const id of ['san-francisco', 'shibuya', 'retail-najaf', 'banana-ripening', 'hudson-fruit-shop']) {
+  for (const id of ['san-francisco', 'shibuya', 'retail-najaf', 'apple-press']) {
     const source = await fetch(base + `/videos/${id}/implementation?file=.env`);
     assert.equal(source.status, 200);
     const implementation = await source.json();
@@ -74,6 +74,12 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
     assert.equal(JSON.stringify(implementation).includes('PRIVATE_SENTINEL'), false);
   }
   assert.equal((await fetch(base + '/videos/unknown/implementation')).status, 404);
+  for (const id of ['banana-ripening', 'hudson-fruit-shop']) {
+    for (const action of ['implementation', 'source.mp4', 'annotated.mp4', 'analysis.json', 'analysis-status']) {
+      assert.equal((await fetch(base + `/videos/${id}/${action}`)).status, 404);
+    }
+    assert.equal((await fetch(base + `/videos/${id}/analyze`, { method: 'POST' })).status, 404);
+  }
   assert.equal((await fetch(base + '/videos/shibuya/implementation', { method: 'POST' })).status, 405);
   const sourceHead = await fetch(base + '/videos/shibuya/implementation', { method: 'HEAD' });
   assert.equal(sourceHead.status, 200);
@@ -119,4 +125,14 @@ test('shop results retain separate fruit counts and require the registered input
   assert.equal(validateAnalysis({ ...result, model: undefined }, 'hudson-fruit-shop', classes, 'BGR'), false);
   assert.deepEqual(frameAtTime(result, 0).counts, { oranges: 12, bananas: 3 });
   assert.equal(validateAnalysis({ ...result, frames: [{ frame: 0, counts: { oranges: 12 } }] }, 'hudson-fruit-shop', classes, 'BGR'), false);
+});
+
+
+test('active gallery preserves traffic and retail, replaces rejected clips and uses landscape HD fruit', async () => {
+  const { videos } = await import('../apps/computer-vision/traffic-counter/analysis-job.js');
+  assert.deepEqual(videos.map((video) => video.id), ['san-francisco', 'shibuya', 'retail-najaf', 'apple-press']);
+  const fruit = videos.find((video) => video.id === 'apple-press');
+  assert.equal(fruit.width / fruit.height, 16 / 9);
+  assert.equal(fruit.source.durationSeconds, 30);
+  assert.deepEqual(fruit.classes.map((item) => [item.id, item.key]), [[47, 'apples']]);
 });

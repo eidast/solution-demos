@@ -9,9 +9,9 @@ A monorepo of local demos showing how technologies can solve practical problems.
 | AI decisions · Jev | [Moral Machine × Jev](apps/jev/moral-machine/README.md) | Implemented; sample mode available | Compare 13 participant choices in original dilemmas with Jev's A/B probabilities. |
 | AI decisions · Jev | [Tic Tac Toe × Jev](apps/jev/tic-tac-toe/README.md) | Implemented; provider key required | Rules and minimax constrain candidate squares; Jev selects the final move. |
 | AI decisions · Jev | [Coin Toss × Jev](apps/jev/coin-toss/README.md) | Implemented; provider key required | Compare Choice, Noul, and Score forecasts against 100 independent software coin flips. |
-| Computer vision · Supervision | [Object Counters](apps/computer-vision/traffic-counter/README.md) | Implemented; prepare source first | Choose traffic, retail or an HD fruit shop; calculate per-frame people/car or orange/banana detections and compare the clean original with its HUD. |
+| Computer vision · Supervision | [Object Counters](apps/computer-vision/traffic-counter/README.md) | Implemented; prepare source first | Choose traffic, retail or landscape HD apple processing; calculate per-frame people/car or apple detections and compare the clean original with its HUD. |
 
-Jev probabilities describe model answers, not human vote shares or proof of correctness. Moral Machine uses original demo scenarios rather than official experiment cases. The computer vision gallery preserves five independent examples and calculates real detections when you press Analyze video. Clean originals and per-video results remain available. Its video attribution and separate model/adapter licenses are documented in [the credits](apps/computer-vision/traffic-counter/THIRD_PARTY_ASSETS.md).
+Jev probabilities describe model answers, not human vote shares or proof of correctness. Moral Machine uses original demo scenarios rather than official experiment cases. The computer vision gallery contains four active examples and calculates real detections when you press Analyze video. Clean originals and per-video results remain available. Its video attribution and separate model/adapter licenses are documented in [the credits](apps/computer-vision/traffic-counter/THIRD_PARTY_ASSETS.md).
 
 ## Run locally
 
@@ -41,7 +41,7 @@ npm run vision:source
 npm start
 ```
 
-Open `/computer-vision/traffic-counter/`. Source preparation downloads five hash-verified Creative Commons videos and YOLOX-S weights. Select San Francisco (13 seconds), Shibuya (45 seconds), native HD retail (45 seconds), HD banana ripening (30 seconds), or the multi-fruit shop (24 seconds), then press **Analyze video** to run that example’s local OpenCV/Supervision calculation and generate its own HUD. Other examples are preserved. No provider key is required for this demo. **People**, **Cars**, **Oranges**, and **Bananas** describe accepted detections in the displayed frame, not unique objects or cumulative traffic. The page lets you pause, seek, and compare the original and annotated clip. See [setup, attribution, and limits](apps/computer-vision/traffic-counter/README.md).
+Open `/computer-vision/traffic-counter/`. Source preparation downloads four hash-verified Creative Commons videos and YOLOX-S weights. Select San Francisco (13 seconds), Shibuya (45 seconds), native HD retail (45 seconds), or landscape HD apples (30 seconds), then press **Analyze video** to run that example’s local OpenCV/Supervision calculation and generate its own HUD. Other examples are preserved. No provider key is required for this demo. **People**, **Cars**, and **Apples** describe accepted detections in the displayed frame, not unique objects or cumulative traffic. The page lets you pause, seek, and compare the original and annotated clip. See [setup, attribution, and limits](apps/computer-vision/traffic-counter/README.md).
 
 ## Repository layout
 
@@ -86,3 +86,5 @@ Create an isolated folder under its capability in `apps/`, with a README describ
 Original code and documentation are [MIT licensed](LICENSE). Moral Machine portraits have [separate attribution and license scope](apps/jev/moral-machine/THIRD_PARTY_ASSETS.md). Computer vision footage uses CC BY 2.0 and CC BY 3.0; its detector weights and vendored adapter are Apache 2.0, as recorded in [their separate credits](apps/computer-vision/traffic-counter/THIRD_PARTY_ASSETS.md).
 
 The **View source code** button opens a keyboard-accessible modal for the selected video. Choose its registry configuration, Python detector/HUD pipeline, browser player/count logic, backend, or the YOLOX adapter and its license. These are the current local implementation files; every video uses the shared pipeline with its own configuration. Close or Escape returns to the demo.
+
+The portrait fruit-shop and single-banana examples were removed at the user's request. The replacement uses a 1280×720 landscape excerpt and the player keeps a consistent 16:9 area, letterboxing other source ratios without stretching.

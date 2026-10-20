@@ -148,7 +148,7 @@ async function chooseVideo(id) {
   cars.setAttribute('aria-label', fruit ? `${choice.classes[1]?.label || 'Objects'} detected in this frame` : 'Cars detected in this frame');
   document.querySelector('.definition').textContent = fruit ? `${choice.classes.map((item) => item.label).join(' and ')} detections in this frame. Occluded or unsupported fruit is not a complete stock count; zero means no accepted detection.` : 'Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.';
   document.querySelector('#method').textContent = `Confidence threshold: 35% · Class-aware NMS: 0.5 IoU${fruit ? ` · COCO ${choice.classes.map((item) => `${item.id}: ${item.name}`).join(', ')}` : ''}`;
-  renderCredits(); video.style.aspectRatio = `${choice.width} / ${choice.height}`;
+  renderCredits();
   video.src = asset('source.mp4'); video.load();
   const location = new URL(window.location.href); location.searchParams.set('video', id); history.replaceState(null, '', location);
   status.textContent = `Loading ${choice.title}…`;
@@ -190,5 +190,5 @@ try {
   for (const item of catalog) { const option = document.createElement('option'); option.value = item.id; option.textContent = item.title; picker.append(option); }
   picker.disabled = false;
   const requested = new URL(window.location.href).searchParams.get('video');
-  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'hudson-fruit-shop');
+  await chooseVideo(catalog.some((item) => item.id === requested) ? requested : 'apple-press');
 } catch { status.textContent = 'The video gallery could not be loaded. Check the local server and reload.'; }

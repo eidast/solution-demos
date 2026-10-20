@@ -37,7 +37,7 @@ All three entries remain available. Exact download URLs, hashes and modification
 
 The unused 4K Yevropeisky escalator candidate was inspected but not added: only 20.6 seconds long and not suitable for the requested walking-retail scene. No candidate footage is included in Git. Licenses above apply to media independently of the repository MIT license; retain attribution/license and modification notes when sharing derivatives.
 
-## Fruit HD · Banana ripening
+## Retired media history · Banana ripening
 
 - Source: [Time Lapse Banana Ripening](https://commons.wikimedia.org/wiki/File:Time_Lapse_Banana_Ripening.webm), by [mauiwowialoha](https://www.youtube.com/user/mauiwowialoha), 12 May 2015. Original YouTube: https://www.youtube.com/watch?v=EAjPKdCPFWM.
 - License: [CC BY 3.0 Unported](https://creativecommons.org/licenses/by/3.0/); Commons records INeverCry's license review on 15 May 2016. No endorsement implied.
@@ -47,7 +47,7 @@ The unused 4K Yevropeisky escalator candidate was inspected but not added: only 
 - Source-page retrieval snapshot: `.cache/banana-source-page.html`, SHA-256 `eb4bbe8f64463deccb00d5820cef629c73e5d1875a1d5eb06e77fd182575ab49`.
 - The timelapse shows one banana changing appearance. Detection is intermittent; it is not a ripeness classifier, inventory system or multi-fruit benchmark. See VALIDATION.md.
 
-## Fruit shop HD · Hudson Greens and Goods
+## Retired media history · Hudson Greens and Goods
 
 - Title: [Hudson Greens and Goods - February 2024 - Sarah Stierch 02](https://commons.wikimedia.org/wiki/File:Hudson_Greens_and_Goods_-_February_2024_-_Sarah_Stierch_02.webm).
 - Required attribution: **Sarah Stierch (Missvain)**, [author profile](https://commons.wikimedia.org/wiki/User:Missvain), filmed 27 February 2024, uploaded 28 February 2024. The page explicitly credits Sarah Stierch (CC BY 4.0).
@@ -56,6 +56,16 @@ The unused 4K Yevropeisky escalator candidate was inspected but not added: only 
 - Original SHA-256: `b5c8fa87921f5d1a7d0b1e3c45dcc6c3c04a909b5d90da6a439e5c96faccbba0`; ignored `.cache/hudson-produce.webm`. Source-page retrieval capture `.cache/hudson-source-page.html`, SHA-256 `abc04ccc52aecaa0b0da969092fe2ba6b2c01976c94a13f6faee41b86aa32fde`.
 - Changes: first 24 seconds, resized to portrait 720×1280 at 12 FPS without cropping, audio removed. Only the analyzed derivative adds accepted orange/banana boxes and the HUD. Both derivatives retain the original's CC BY 4.0 media attribution.
 - Earlier videos remain intact. Rejected research candidates (a distant Tokyo fruit stand, aerial floating market, night-market walk) are not registered or committed; their viewpoints do not provide this close shop display. Downloaded research files stay ignored.
+
+## Apples HD · Pressing day (active)
+
+- Source: [RoscheiderhofKeltertag2018](https://commons.wikimedia.org/wiki/File:RoscheiderhofKeltertag2018.webm), by [Helge Klaus Rieder](https://commons.wikimedia.org/wiki/User:HelgeRieder), Freilichtmuseum Roscheider Hof, Konz, 9 September 2018.
+- Selected video license: [CC BY-SA 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/). The source is dual-licensed with GFDL; this project selects CC BY-SA 3.0. The clean excerpt and annotated video derivative retain CC BY-SA 3.0, independently of MIT project code. No endorsement implied.
+- Download: https://upload.wikimedia.org/wikipedia/commons/6/6e/RoscheiderhofKeltertag2018.webm. Original 1920×1080 landscape; 3 min 14s.
+- Source SHA-256: `53b1d23d39c657d741e6629d415147c995a6335355b4a5b9860f9f204154374e`; ignored `.cache/apple-press.webm`. Source page capture `.cache/apple-press-source-page.html`, SHA-256 `b8e03b69b79ef4bb24452d83f8df8165697446dfe92b155da39fd7b9941daeb7`.
+- Changes: source seconds 8–38, resized to 1280×720 at 12 FPS, all audio removed. Only the analyzed derivative adds boxes and HUD. Visible title/author/license/source and modification credits follow the selected entry.
+- Original soundtrack credits: Porch blues by Kevin MacLeod, incompetech.com, CC BY 3.0. No soundtrack is included in either served derivative; downloaded research originals remain local/ignored.
+- Both earlier fruit entries above were explicitly removed at the user's request on 20 October 2026. Their attribution is retained as history; neither entry nor its ignored local files are publicly served. The three earlier traffic/retail entries remain active.
 
 ## YOLOX model and adapter
 
