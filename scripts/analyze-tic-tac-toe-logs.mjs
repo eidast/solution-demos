@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const directory = fileURLToPath(new URL('../TicTacToe/logs/', import.meta.url));
+const directory = fileURLToPath(new URL('../apps/jev/tic-tac-toe/logs/', import.meta.url));
 if (!existsSync(directory)) {
   console.log('No Tic Tac Toe logs yet.');
   process.exit(0);

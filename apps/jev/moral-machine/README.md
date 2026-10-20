@@ -34,11 +34,11 @@ Jev is a model for fast, structured judgments. We use its **`choice`** question 
 2. **Record the participant's decisions.** The browser holds one A/B selection per case. After all 13 are selected, it sends their ordered IDs and selections to `POST /api/evaluate`. The server rejects missing, reordered, or invalid choices. These selections are **never included in the Jev request**; the model therefore cannot simply echo the participant.
 3. **Form the model questions.** The server sends the 13 case descriptions as one `state` array and one named `choice` question per case. Each question says: `Evaluate only scenario "ID". Given the unavoidable crash, which of the two outcomes would you choose? Answer A or B.` The `criteria` spell out the action and spared/killed groups for A and B. Jev answers each question independently against the shared state, although that shared state means other cases are visible and could affect an answer.
 4. **Call and check Jev.** With `OPENROUTER_API_KEY`, the server calls OpenRouter's [Decisions API](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request) using the pinned model `typesafe/jev-1.13`. With only `AI_GATEWAY_API_KEY`, it calls [Vercel AI Gateway's evaluation API](https://vercel.com/docs/ai-gateway/modalities/evaluation) using `typesafe-ai/jev`. The key stays on the server. The server requires all 13 answers, an A or B `choice` for each, and finite A/B probabilities between 0 and 1 that sum to approximately 1. A malformed or failed response ends the evaluation without saving a mixed or partial report.
-5. **Compare and save.** The application uses Jev's returned `choice` as its selected option; it does not recompute that choice from rounded display percentages. For each case it shows the participant's selection, Jev's selection, and both probabilities. The report saves the exact case snapshot, selections, validated model outputs, model ID, and summary in the local, Git-ignored `MoralMachine/reports/` directory. It excludes the API key and raw provider response.
+5. **Compare and save.** The application uses Jev's returned `choice` as its selected option; it does not recompute that choice from rounded display percentages. For each case it shows the participant's selection, Jev's selection, and both probabilities. The report saves the exact case snapshot, selections, validated model outputs, model ID, and summary in the local, Git-ignored `apps/jev/moral-machine/reports/` directory. It excludes the API key and raw provider response.
 
 For example, suppose a case asks whether to spare one adult or five adults, and Jev returns `choice: "b"` with `probabilities: { "a": 0.20, "b": 0.80 }`. The interface shows B as **Jev's selected option** and a 20% / 80% distribution. If the participant chose A, that case is a disagreement and contributes `0.20` to the mean probability assigned to their choices. These numbers are **hypothetical**, not a saved run. The 80% describes Jev's distribution over the two offered answers for this wording; it does not mean an 80% chance that B is ethically correct, or that 80% of people would choose B.
 
-The summary reports `agreementCount = number of cases where participant choice equals Jev choice` and `meanSelectedProbability = average of Jev's probability for the participant's option across 13 cases`. Agreement is descriptive, not accuracy. If there is no configured provider key, the Moral Machine exercise uses visibly labeled **sample mode** with fixed UI example probabilities; those values are not Jev outputs. The [integration contract](../docs/INTEGRATIONS.md) documents the request and response fields, and the [experiment protocol](EXPERIMENT.md) documents the cases and calculations.
+The summary reports `agreementCount = number of cases where participant choice equals Jev choice` and `meanSelectedProbability = average of Jev's probability for the participant's option across 13 cases`. Agreement is descriptive, not accuracy. If there is no configured provider key, the Moral Machine exercise uses visibly labeled **sample mode** with fixed UI example probabilities; those values are not Jev outputs. The [integration contract](../../../docs/INTEGRATIONS.md) documents the request and response fields, and the [experiment protocol](EXPERIMENT.md) documents the cases and calculations.
 
 ### What would count as the "best" decision?
 
@@ -56,7 +56,7 @@ Until such a protocol is defined and run, the app can verify **what Jev returned
 
 ## Run locally
 
-Requires Node.js 20 or newer. No package installation is needed.
+Requires Node.js 22 or newer. No package installation is needed.
 
 ```bash
 cp -n .env.example .env
@@ -67,13 +67,13 @@ npm start
 
 Open <http://127.0.0.1:3000/MoralMachine/>. If port 3000 is in use, run `PORT=3117 npm start` and open <http://127.0.0.1:3117/MoralMachine/>. Open the server URL, not `public/index.html` as a `file://` page: the latter can show the styling but cannot load scenarios or evaluate choices. The server binds to `127.0.0.1` by default. Without an API key, the app enters clearly labeled **sample mode**, whose probabilities are illustrative and do not come from Jev.
 
-OpenRouter takes priority when both provider keys are set. The key is read only on the server. Never put it in client code, requests from the browser, documentation, or a commit. See [SECURITY.md](../SECURITY.md) for key handling and public deployment requirements.
+OpenRouter takes priority when both provider keys are set. The key is read only on the server. Never put it in client code, requests from the browser, documentation, or a commit. See [SECURITY.md](../../../SECURITY.md) for key handling and public deployment requirements.
 
 ## What the Moral Machine demo measures
 
 Each scenario shows an A/B choice. The result page reports the two Jev probabilities, the participant's choice, the most probable model choice, the number of matches across 13 cases, and the mean Jev probability assigned to the participant's choices. The participant's choices are sent to the local server for validation and comparison but are **not forwarded to Jev**.
 
-Every completed evaluation now saves a local report in `MoralMachine/reports/<run-id>.json`. It includes the timestamp, provider and model, a full snapshot of the scenario wording and both outcomes, your 13 choices, Jev's A/B results, and the session summary. The page lists previous runs, can reopen one, and can download its JSON report. Reports are ignored by Git and stay on this computer unless you explicitly export or share them. The demo currently uses the same 13 authored cases for every run; keeping a snapshot makes future runs comparable even if those cases change. See [the report specification](EXPERIMENT.md#saved-run-reports).
+Every completed evaluation now saves a local report in `apps/jev/moral-machine/reports/<run-id>.json`. It includes the timestamp, provider and model, a full snapshot of the scenario wording and both outcomes, your 13 choices, Jev's A/B results, and the session summary. The page lists previous runs, can reopen one, and can download its JSON report. Reports are ignored by Git and stay on this computer unless you explicitly export or share them. The demo currently uses the same 13 authored cases for every run; keeping a snapshot makes future runs comparable even if those cases change. See [the report specification](EXPERIMENT.md#saved-run-reports).
 
 The backend sends 13 `choice` questions in one evaluation request. It uses [OpenRouter's Decisions API](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request) with `typesafe/jev-1.13`, or [Vercel AI Gateway's evaluation API](https://vercel.com/docs/ai-gateway/modalities/evaluation) with `typesafe-ai/jev`.
 
@@ -83,7 +83,7 @@ The backend sends 13 `choice` questions in one evaluation request. It uses [Open
 - [Original study background](ORIGINAL_STUDY.md) distinguishes the published experiment from this demo.
 - [Asset provenance](THIRD_PARTY_ASSETS.md) records portrait sources, attribution, and hashes.
 - [Preview provenance](docs/assets/README.md) describes the controlled example shown above.
-- [Shared integration contract](../docs/INTEGRATIONS.md) describes Jev provider requests and responses.
-- [Repository security](../SECURITY.md) covers local credentials and saved data.
+- [Shared integration contract](../../../docs/INTEGRATIONS.md) describes Jev provider requests and responses.
+- [Repository security](../../../SECURITY.md) covers local credentials and saved data.
 
-The original code and documentation are under the [MIT License](../LICENSE). Moral Machine portraits have separate attribution and license scope.
+The original code and documentation are under the [MIT License](../../../LICENSE). Moral Machine portraits have separate attribution and license scope.

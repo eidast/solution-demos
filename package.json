@@ -1,14 +1,25 @@
 {
-  "name": "jev-decision-demos",
+  "name": "solution-demos",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run start --workspace @solution-demos/showcase",
     "test": "node --test",
     "check:secrets": "node scripts/check-secrets.mjs",
-    "analyze:tictactoe": "node scripts/analyze-tic-tac-toe-logs.mjs"
+    "analyze:tictactoe": "node scripts/analyze-tic-tac-toe-logs.mjs",
+    "vision:setup": "uv venv apps/computer-vision/traffic-counter/.venv --python 3.13 && uv pip sync --python apps/computer-vision/traffic-counter/.venv/bin/python apps/computer-vision/traffic-counter/requirements.txt",
+    "vision:prepare": "apps/computer-vision/traffic-counter/.venv/bin/python apps/computer-vision/traffic-counter/prepare.py --all",
+    "test:vision": "apps/computer-vision/traffic-counter/.venv/bin/python -m unittest discover -s apps/computer-vision/traffic-counter -p \"test_*.py\"",
+    "vision:source": "apps/computer-vision/traffic-counter/.venv/bin/python apps/computer-vision/traffic-counter/prepare.py --source-only --all"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=22"
+  },
+  "description": "Local demos of practical solutions across AI decisions and computer vision.",
+  "workspaces": [
+    "apps/showcase",
+    "apps/jev/*"
+  ]
 }

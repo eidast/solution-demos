@@ -3,5 +3,12 @@
 node_modules/
 .DS_Store
 *.log
-/MoralMachine/reports/
-/TicTacToe/logs/
+/apps/jev/moral-machine/reports/
+/apps/jev/tic-tac-toe/logs/
+/apps/jev/coin-toss/logs/
+
+# Local computer vision runtime, downloads, and generated outputs
+/apps/computer-vision/traffic-counter/.venv/
+/apps/computer-vision/traffic-counter/.cache/
+/apps/computer-vision/traffic-counter/data/
+__pycache__/

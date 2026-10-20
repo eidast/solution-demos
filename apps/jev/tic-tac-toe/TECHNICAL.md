@@ -11,7 +11,7 @@ This is a local, single-player, 3×3 Tic Tac Toe game. The human chooses X or O;
 | `game.js` | Eight winning lines, result detection, Jev question construction, provider call, and response validation. |
 | `session.js` | In-memory games, authoritative turn and board updates, one NDJSON log per game. |
 | `quality.js` | Exhaustive minimax scores for all legal machine moves; defines the optimal candidate set and audit. |
-| `../server.js` | Loopback HTTP routes, provider selection, static allowlist, and secret-bearing server calls. |
+| `../../showcase/server.js` | Loopback HTTP routes, provider selection, static allowlist, and secret-bearing server calls. |
 
 ## Board representation
 
@@ -81,7 +81,7 @@ The probabilities describe Jev's distribution over the offered square labels. Th
 
 ## Local execution logs
 
-Each game writes `TicTacToe/logs/<game-id>.jsonl`. The directory is created with mode `0700`, files with mode `0600`, and Git ignores the entire log directory. Each line is one JSON event with `schemaVersion: 2`, UTC `at`, and `gameId`. Older v1 logs remain valid historical evidence of the unrestricted policy; the analyzer reports the two policies separately.
+Each game writes `apps/jev/tic-tac-toe/logs/<game-id>.jsonl`. The directory is created with mode `0700`, files with mode `0600`, and Git ignores the entire log directory. Each line is one JSON event with `schemaVersion: 2`, UTC `at`, and `gameId`. Older v1 logs remain valid historical evidence of the unrestricted policy; the analyzer reports the two policies separately.
 
 | Event | Recorded fields |
 | --- | --- |
@@ -107,3 +107,7 @@ The v1 policy offered every empty cell and asked Jev to choose. The controlled o
 The policy has a different decision meaning from v1: Jev expresses a preference among prefiltered moves, not over every empty cell. Its returned probabilities apply only to the offered set. Compare v1 and v2 logs separately; do not interpret v2's zero suboptimal count as evidence that Jev learned optimal play.
 
 Further work could measure latency, cost, and stability on a fixed set of reachable boards, including repeated calls for positions with multiple optimal moves. Prompt variations can be tested against that benchmark, but a prompt alone cannot enforce game rules. A deterministic minimax opponent would remove Jev's final square selection and is outside this demo's current purpose.
+
+## Monorepo migration
+
+This demo moved into `apps/jev/tic-tac-toe/`. Existing local reports or logs move with the directory and remain ignored by Git. The move changes filesystem paths only: saved schemas, permissions, retention, provider IDs, question wording, protocol, and metric definitions are unchanged. Existing HTTP routes remain available. See [the migration notes](../../../docs/MONOREPO.md).

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111d28">
+  <title>Coin Toss × Jev</title>
+  <link rel="stylesheet" href="/CoinToss/style.css">
+</head>
+<body>
+  <div class="shell">
+    <header><a class="brand" href="/">◉ <span>SOLUTION DEMOS</span></a><a href="/">All demos ↗</a></header>
+    <main>
+      <p class="eyebrow">THREE JEV PRIMITIVES · 100 CALLS</p>
+      <h1>Coin toss <em>× Jev</em></h1>
+      <p class="intro">Each call asks Jev the same future coin question as a Choice, Noul, and Score. Then the server flips an independent fair software coin. Compare the three answers against the same outcome.</p>
+      <p id="connection" class="connection" role="status">Checking Jev connection…</p>
+      <section class="controls" aria-label="Run controls">
+        <button id="start" class="primary" type="button" disabled>Start 100 tosses</button>
+        <button id="pause" type="button" disabled>Pause after this toss</button>
+        <button id="resume" type="button" hidden>Continue</button>
+        <button id="step" type="button" hidden>One toss</button>
+        <button id="newRun" type="button" hidden>New run</button>
+      </section>
+      <p id="status" class="status" role="status" aria-live="polite">Ready to begin.</p>
+      <p id="error" class="error" role="alert" hidden></p>
+      <section id="results" class="results" hidden aria-label="Run results">
+        <div class="scoreboard">
+          <div><span>COIN · HEADS</span><strong id="heads">0</strong></div>
+          <div><span>COIN · TAILS</span><strong id="tails">0</strong></div>
+          <div><span>PROGRESS</span><strong id="progress">0 / 100</strong></div>
+        </div>
+        <div class="meter" role="progressbar" aria-label="Tosses completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="meterFill"></span></div>
+        <p id="winner" class="winner" aria-live="polite"></p>
+        <section class="methods" aria-labelledby="methodsTitle">
+          <h2 id="methodsTitle">Three ways to answer</h2>
+          <p>All three see the same state before the coin is flipped. Choice selects a named side; Noul gives P(heads); Score places the answer between tails (0) and heads (1). Score is a diagnostic use of an ordered scale for a two-category event.</p>
+          <div class="method-grid">
+            <article><h3>Choice</h3><strong id="choiceAccuracy">0 / 0</strong><span id="choiceMix">Heads 0 · tails 0</span><span id="choiceBrier">Brier —</span><small>Selected label · P(heads)</small></article>
+            <article><h3>Noul</h3><strong id="noulAccuracy">0 / 0</strong><span id="noulMix">Heads 0 · tails 0 · undecided 0</span><span id="noulBrier">Brier —</span><small>P(heads), threshold 0.5</small></article>
+            <article><h3>Score</h3><strong id="scoreAccuracy">0 / 0</strong><span id="scoreMix">Heads 0 · tails 0 · undecided 0</span><span id="scoreBrier">Brier —</span><small>Position 0=tails, 1=heads</small></article>
+          </div>
+          <p class="method-note">Accuracy is correct predictions out of non-undecided predictions. Brier scores the heads forecast against the coin result; lower is better, and 0.25 is the expected score for a constant 0.5 forecast. Score uses its heads-rung probability for this diagnostic. No method can see the independent future result.</p>
+        </section>
+        <div class="trace-heading"><h2>Every toss</h2><span>Scroll sideways to inspect all three signals · hit or miss</span></div>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Toss history; scroll horizontally for all columns"><table><thead><tr><th scope="col">#</th><th scope="col">Coin result</th><th scope="col">Choice · P(heads)</th><th scope="col">Noul · P(heads)</th><th scope="col">Score · position</th><th scope="col">Time</th></tr></thead><tbody id="trace"></tbody></table></div>
+        <details><summary>Local run log</summary><code id="logPath"></code></details>
+      </section>
+    </main>
+    <footer>Three Jev questions in one request per toss · fair software coin flipped afterward · local logs only</footer>
+  </div>
+  <script type="module" src="/CoinToss/app.js"></script>
+</body>
+</html>

@@ -137,7 +137,7 @@ async function start(mark) {
     $('#error').classList.add('hidden');
     $('#humanMark').textContent = mark;
     $('#jevMark').textContent = mark === 'X' ? 'O' : 'X';
-    $('#logPath').textContent = `TicTacToe/logs/${game.id}.jsonl`;
+    $('#logPath').textContent = `apps/jev/tic-tac-toe/logs/${game.id}.jsonl`;
     $('#welcome').classList.add('hidden');
     $('#game').classList.remove('hidden');
     render();

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { scenarios } from '../MoralMachine/scenarios.js';
-import { getRun, listRuns, saveRun } from '../MoralMachine/runs.js';
+import { scenarios } from '../apps/jev/moral-machine/scenarios.js';
+import { getRun, listRuns, saveRun } from '../apps/jev/moral-machine/runs.js';
 
 test('a saved run keeps scenario snapshots, choices, model results, and summary', (t) => {
   const root = mkdtempSync(join(tmpdir(), 'moral-machine-run-'));

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyMachineAnswer, chooseJevMove, moveQuestion, resultFor, validMachineTurn } from '../TicTacToe/game.js';
+import { applyMachineAnswer, chooseJevMove, moveQuestion, resultFor, validMachineTurn } from '../apps/jev/tic-tac-toe/game.js';
 
 test('X starts, only legal machine turns are accepted, and completed boards stop', () => {
   assert.equal(validMachineTurn(Array(9).fill(null), 'O'), true);

@@ -1,0 +1,9 @@
+# Design
+
+Prepare the supplied example via an explicit local CLI, not an HTTP subprocess. Download a hash-verified source video and ONNX model, trim source seconds 21–34, resize to 1280×720, and sample at 12 FPS. Run YOLOX-S with confidence >= 0.35 and class-aware NMS IoU 0.5. Keep COCO person (0) and car (2), then use Supervision BoxAnnotator and LabelAnnotator. Buses, trucks, and other COCO categories do not count as cars. Per-frame counts include every accepted detection, without temporal accumulation or claims of identity.
+
+The Python environment is separate and ignored. Vendor the Apache-2.0 OpenCV Zoo YOLOX adapter with its license and exact commit; weights stay ignored and hash-checked. Source media is CC BY 3.0 with attribution to Editor. Generated clips are silent H.264 MP4 with metadata at schemaVersion 1. Cache, environment, and output directories stay ignored and retained until manually removed. Source provenance and metadata include hashes and model/runtime settings, without personal choices or credentials. No source clip or weights are bundled into Git.
+
+The existing Node server adds an isolated route handler. Serve fixed HTML/CSS/JS and three generated files only: source.mp4, annotated.mp4, analysis.json. Handle valid single byte ranges for video; reject invalid ranges with 416. No generic directory serving and no runtime requests to remote video/model hosts.
+
+The English UI retains the catalog's dark styling. A single native video player switches between original and annotated sources while retaining playback time. Count cards reflect the current decoded video's media timestamp (requestVideoFrameCallback where available, playback/seek events otherwise), including when paused, seeking, switching views, and at the end. Counts remain unavailable until a frame has loaded. Initial missing-data and media errors expose recovery instructions. This is prerecorded local inference replay, visibly labeled as such.

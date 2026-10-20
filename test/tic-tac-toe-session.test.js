@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, statSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createGame, playHuman, playMachine } from '../TicTacToe/session.js';
-import { scoreLegalMoves } from '../TicTacToe/quality.js';
+import { createGame, playHuman, playMachine } from '../apps/jev/tic-tac-toe/session.js';
+import { scoreLegalMoves } from '../apps/jev/tic-tac-toe/quality.js';
 
 test('the minimax audit identifies a winning move', () => {
   const board = ['O', 'O', null, 'X', 'X', null, 'X', null, null];

@@ -1,0 +1,71 @@
+[
+  {
+    "id": "san-francisco",
+    "title": "San Francisco · Street traffic",
+    "description": "The original 13-second street traffic demo, preserved alongside newer examples.",
+    "width": 1280,
+    "height": 720,
+    "fps": 12,
+    "cacheFile": "street-traffic.webm",
+    "source": {
+      "title": "Street traffic",
+      "author": "Editor",
+      "page": "https://commons.wikimedia.org/wiki/File:Street_traffic.webm",
+      "authorUrl": "https://www.youtube.com/user/Editor",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Street_traffic.webm",
+      "sha256": "e5facb24baf755f0c1193999d823e99f6032661ad2bdef5cc28cc1cbbfde03e2",
+      "startSeconds": 21,
+      "durationSeconds": 13,
+      "changes": "Excerpt at 21–34 seconds; resized to 1280×720 at 12 FPS; audio removed; detections and HUD added only to the analyzed version."
+    },
+    "limitation": "Small, distant and occluded road users may be missed; buses and trucks are excluded from Cars."
+  },
+  {
+    "id": "shibuya",
+    "title": "Shibuya · Crossing",
+    "description": "45 seconds at Shibuya Crossing. Compare low-resolution crowd footage with local detections.",
+    "width": 960,
+    "height": 720,
+    "fps": 12,
+    "cacheFile": "shibuya-crossing.ogv",
+    "source": {
+      "title": "Shibuya Crossing",
+      "author": "Emran Kassim",
+      "page": "https://commons.wikimedia.org/wiki/File:Shibuya_Crossing.ogv",
+      "authorUrl": "https://www.flickr.com/people/15622795@N05",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Shibuya_Crossing.ogv",
+      "sha256": "68f0d2f3b7acd107c462ac14ba30c7ffce7572594b30fe576c45f68ad1b43d42",
+      "startSeconds": 0,
+      "durationSeconds": 45,
+      "changes": "First 45 seconds; upscaled from 640×480 to 960×720 at 12 FPS with aspect ratio preserved; audio removed; detections and HUD added only to the analyzed version."
+    },
+    "limitation": "The 640×480 source misses many distant people and some cars. Upscaling adds no detail; this is not a crowd census."
+  },
+  {
+    "id": "retail-najaf",
+    "title": "Retail HD · Al Basheer",
+    "description": "Walk through an HD shopping center: aisles, walking shoppers and the checkout area.",
+    "width": 1280,
+    "height": 720,
+    "fps": 12,
+    "cacheFile": "retail-najaf.webm",
+    "source": {
+      "title": "Al Basheer shopping center, Najaf",
+      "author": "Al Basheer Shopping Center (مركز البشير للتسوق)",
+      "page": "https://commons.wikimedia.org/wiki/File:Al_Basheer_shopping_center,_Najaf.webm",
+      "authorUrl": "https://www.youtube.com/channel/UCMnJZZP_rusJmO7fBPQI7HA",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Al_Basheer_shopping_center%2C_Najaf.webm",
+      "sha256": "41efc76d6a9da42788b821f3116534591abcb8df92d1a83ad060a97f34b52be2",
+      "startSeconds": 6,
+      "durationSeconds": 45,
+      "changes": "Excerpt at 6–51 seconds; native HD 1280×720 retained at 12 FPS; audio removed; detections and HUD added only to the analyzed version."
+    },
+    "limitation": "Camera movement, scene cuts, shelves, occlusion and people printed on packaging can affect detections. These are per-frame model estimates, not unique shoppers."
+  }
+]

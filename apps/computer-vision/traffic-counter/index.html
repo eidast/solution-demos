@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>People & Cars · Solution Demos</title>
+  <link rel="stylesheet" href="/computer-vision/traffic-counter/style.css">
+</head>
+<body>
+  <header><a href="/">◉ Solution Demos</a><span>Computer vision · Supervision</span></header>
+  <main>
+    <label class="video-picker">Video example <select id="videoSelect" disabled aria-label="Video example"></select></label>
+    <div class="intro"><div><p class="eyebrow">FROM VIDEO TO VISIBLE COUNTS</p><h1>People. Cars.<br>Counted in view.</h1></div><p class="lede" id="videoDescription">45 seconds at Shibuya Crossing. Watch the original, then calculate people and cars locally to build the vision HUD.</p></div>
+    <section class="demo" aria-label="Video and detected object counts">
+      <div class="viewer">
+        <div class="toolbar"><span id="viewLabel">Original · clean video</span><label><input id="annotations" type="checkbox" disabled> Show detections &amp; HUD</label></div>
+        <video id="video" controls playsinline muted preload="metadata" aria-label="Selected video example"></video>
+        <p class="caption" id="clipInfo">45-second excerpt · 4:3 source · Silent</p>
+      </div>
+      <aside>
+        <p class="eyebrow">IN THIS FRAME</p>
+        <div class="metric people"><span class="dot"></span><h2>People</h2><output id="people" aria-label="People detected in this frame">—</output></div>
+        <div class="metric cars"><span class="dot"></span><h2>Cars</h2><output id="cars" aria-label="Cars detected in this frame">—</output></div>
+        <p class="frame" id="frame">Waiting for video</p>
+        <p class="definition">Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.</p>
+      </aside>
+    </section>
+    <div class="analysis-controls"><button id="analyze" type="button" disabled>Analyze video</button><progress id="progress" max="540" value="0" aria-label="Video analysis progress" hidden></progress></div>
+    <p id="status" role="status">Loading the local video…</p>
+    <section id="recovery" class="notice" hidden><h2>Prepare the example locally</h2><p>From the repository root, run:</p><pre>npm run vision:setup
+npm run vision:source</pre><p>Then reload this page. Python 3.13, uv, and FFmpeg are required. Preparation downloads the licensed video and detector weights. Then use Analyze video on this page.</p></section>
+    <div class="details">
+      <section><h2>What you are seeing</h2><p><span id="pipelineDescription">Choose an example to load its local pipeline.</span></p><p>Pause or scrub to inspect a moment. Turn detections &amp; HUD off to compare the clean original at the same time.</p></section>
+      <section><h2>A demo, with limits</h2><p><span id="limitation">Counts are model estimates.</span> These are detected objects per frame, not unique people. There is no identity tracking or live camera connection.</p><p id="method">Confidence threshold: 35% · Class-aware NMS: 0.5 IoU</p></section>
+    </div>
+    <footer><p id="credits">Choose an example to see its source, license and modification credits.</p><p><a href="https://github.com/roboflow/supervision">Supervision · MIT</a> · <a href="https://github.com/opencv/opencv_zoo/tree/47534e27c9851bb1128ccc0102f1145e27f23f98/models/object_detection_yolox">YOLOX / OpenCV Zoo · Apache 2.0</a></p></footer>
+  </main>
+  <script type="module" src="/computer-vision/traffic-counter/app.js"></script>
+</body>
+</html>

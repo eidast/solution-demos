@@ -3,7 +3,8 @@ import { join, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const root = new URL('../', import.meta.url).pathname;
-const ignoredDirectories = new Set(['.git', 'node_modules']);
+const ignoredDirectories = new Set(['.git', 'node_modules', '.venv', '.cache', '__pycache__']);
+const visionOutputs = join(root, 'apps', 'computer-vision', 'traffic-counter', 'data');
 const localSecretFiles = /^\.env(?:\..+)?$/;
 const keyPatterns = [
   new RegExp('sk' + '-or-v1-[A-Za-z0-9]{20,}', 'g'),
@@ -14,7 +15,7 @@ const keyPatterns = [
 function filesIn(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
-    if (entry.isDirectory()) return ignoredDirectories.has(entry.name) ? [] : filesIn(path);
+    if (entry.isDirectory()) return ignoredDirectories.has(entry.name) || path === visionOutputs ? [] : filesIn(path);
     return entry.isFile() && !localSecretFiles.test(entry.name) ? [path] : [];
   });
 }

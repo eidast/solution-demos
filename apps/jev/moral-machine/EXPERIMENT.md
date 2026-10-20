@@ -1,6 +1,6 @@
 # Experiment protocol and interpretation
 
-This document covers the 13-case Moral Machine exercise, its interpretation, and its saved reports. The separate [Tic Tac Toe game](../TicTacToe/TECHNICAL.md) has its own decision policy and log schema.
+This document covers the 13-case Moral Machine exercise, its interpretation, and its saved reports. The separate [Tic Tac Toe game](../tic-tac-toe/TECHNICAL.md) has its own decision policy and log schema.
 
 **Version:** 1.0, September 22, 2026. **Status:** working educational demo, not a scientific replication or a vehicle-control system.
 
@@ -23,7 +23,7 @@ Choices are held in browser memory while the participant works. A completed eval
 
 ## Saved run reports
 
-For each successful evaluation, the server writes `MoralMachine/reports/<uuid>.json` with restrictive local file permissions. Each report records an ISO 8601 timestamp, provider and model ID, the exact scenario descriptions and A/B outcomes shown in that run, the participant's ordered choices, the validated Jev or sample answers, and the computed agreement count and mean selected probability. The scenarios are copied into the report at evaluation time; a later change to `scenarios.js` does not rewrite older reports. Sample results remain labeled `sample`, so they cannot be mistaken for Jev observations. Failed or incomplete evaluations do not create reports.
+For each successful evaluation, the server writes `apps/jev/moral-machine/reports/<uuid>.json` with restrictive local file permissions. Each report records an ISO 8601 timestamp, provider and model ID, the exact scenario descriptions and A/B outcomes shown in that run, the participant's ordered choices, the validated Jev or sample answers, and the computed agreement count and mean selected probability. The scenarios are copied into the report at evaluation time; a later change to `scenarios.js` does not rewrite older reports. Sample results remain labeled `sample`, so they cannot be mistaken for Jev observations. Failed or incomplete evaluations do not create reports.
 
 The browser lists previous runs through `GET /api/runs`, reopens a full report through `GET /api/runs/:id`, and offers a JSON download. `POST /api/evaluate` returns the report it just saved. Reports are local files excluded from Git. They contain participant decisions, so review a downloaded report before sharing it. There is no name, account, IP address, or API key in the report schema. The files do not include the raw provider response, usage metadata, or billing data.
 
@@ -90,3 +90,7 @@ After adding reports, a new 13-case browser run against OpenRouter produced a lo
 After adding character portraits, every pictured group was checked against its textual count and the local asset inventory. A narrow-viewport browser check showed the icons and spared/killed labels inside both decision cards. A further 13-case OpenRouter run completed, returned Jev results, and saved a report that includes the portrait IDs in its scenario snapshot. The credits page and an approved portrait URL returned HTTP 200; an unknown portrait path and `/.env` returned HTTP 404.
 
 After adding the road schematics on September 22, 2026, a browser check rendered all 13 cases and confirmed that each group stays in the same lane between options while its killed/spared label reverses. Desktop and 390-pixel mobile captures were inspected, with no horizontal overflow on mobile. A full 13-case browser session returned 13 live OpenRouter Jev results. These checks establish correct rendering and integration for this run; they do not demonstrate that the interface eliminates decision bias. The case order and wording remain fixed.
+
+## Monorepo migration
+
+This demo moved into `apps/jev/moral-machine/`. Existing local reports or logs move with the directory and remain ignored by Git. The move changes filesystem paths only: saved schemas, permissions, retention, provider IDs, question wording, protocol, and metric definitions are unchanged. Existing HTTP routes remain available. See [the migration notes](../../../docs/MONOREPO.md).
