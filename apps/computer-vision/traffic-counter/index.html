@@ -25,7 +25,7 @@
         <p class="definition">Visible detections, not a running total. Cars exclude buses, trucks, bicycles, and motorcycles.</p>
       </aside>
     </section>
-    <div class="analysis-controls"><button id="analyze" type="button" disabled>Analyze video</button><progress id="progress" max="540" value="0" aria-label="Video analysis progress" hidden></progress></div>
+    <div class="analysis-controls"><button id="analyze" type="button" disabled>Analyze video</button><button id="viewSource" class="secondary" type="button" disabled>View source code</button><progress id="progress" max="540" value="0" aria-label="Video analysis progress" hidden></progress></div>
     <p id="status" role="status">Loading the local video…</p>
     <section id="recovery" class="notice" hidden><h2>Prepare the example locally</h2><p>From the repository root, run:</p><pre>npm run vision:setup
 npm run vision:source</pre><p>Then reload this page. Python 3.13, uv, and FFmpeg are required. Preparation downloads the licensed video and detector weights. Then use Analyze video on this page.</p></section>
@@ -35,6 +35,13 @@ npm run vision:source</pre><p>Then reload this page. Python 3.13, uv, and FFmpeg
     </div>
     <footer><p id="credits">Choose an example to see its source, license and modification credits.</p><p><a href="https://github.com/roboflow/supervision">Supervision · MIT</a> · <a href="https://github.com/opencv/opencv_zoo/tree/47534e27c9851bb1128ccc0102f1145e27f23f98/models/object_detection_yolox">YOLOX / OpenCV Zoo · Apache 2.0</a></p></footer>
   </main>
+  <dialog id="sourceDialog" aria-labelledby="sourceTitle" aria-describedby="sourceDescription">
+    <div class="source-heading"><h2 id="sourceTitle">Implementation source</h2><button id="closeSource" type="button" autofocus>Close</button></div>
+    <p id="sourceDescription">Selected video configuration and shared pipeline. MIT project code; YOLOX adapter: Apache 2.0 (license included).</p>
+    <p id="sourceStatus" role="status"></p>
+    <label class="source-file">Source file <select id="sourceFile" disabled></select></label>
+    <pre class="source-code" tabindex="0" aria-label="Source code"><code id="sourceCode"></code></pre>
+  </dialog>
   <script type="module" src="/computer-vision/traffic-counter/app.js"></script>
 </body>
 </html>

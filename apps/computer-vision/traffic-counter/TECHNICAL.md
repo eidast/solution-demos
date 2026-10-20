@@ -20,7 +20,7 @@ V1 was the 13-second San Francisco flat example, mode local-precomputed-inferenc
 
 ## HTTP and global job control
 
-The allowlist serves fixed frontend files and videos.json, plus `videos/<knownId>/{source.mp4,annotated.mp4,analysis.json}`. Video byte ranges/HEAD retain their existing behavior. Private manifests, legacy analysis, Python, caches, weights, and arbitrary files are inaccessible. Unknown IDs receive 404. Former flat media/job aliases refer to Shibuya for compatibility.
+The allowlist serves fixed frontend files and videos.json, plus `videos/<knownId>/{source.mp4,annotated.mp4,analysis.json}`. Video byte ranges/HEAD retain their existing behavior. Private manifests, legacy analysis, raw Python paths, caches, weights, and arbitrary files are inaccessible. Unknown IDs receive 404. Former flat media/job aliases refer to Shibuya for compatibility.
 
 Bodyless `POST videos/<knownId>/analyze` retains the loopback-peer, matching loopback Origin/Host, custom-action-header, no-body and same-origin-metadata checks. A manager permits only one running worker globally. `GET videos/<knownId>/analysis-status` includes selected-video state and activeVideoId, letting the UI display another example while preserving the active worker. Each worker uses only fixed interpreter/script arguments plus a registry-validated `--video` ID, no shell, an environment allowlist, and a five-minute deadline. Output progress is bounded to that video's expected frames. Completion requires fresh schema-v3 output for the matching ID; raw stderr is not exposed.
 
@@ -33,3 +33,7 @@ The original loads first and never has added overlays. Saved valid results may p
 ## Publication boundary
 
 Only source, registry, tests, licenses and documentation are committed. Source/weights are hash-verifiable downloads, and generated media/analysis remain ignored. Publishing the repository does not deploy the unauthenticated paid-key server publicly. The root .env and local participant histories remain ignored with their existing permissions and retention.
+
+## Implementation source viewer
+
+`GET/HEAD videos/<knownId>/implementation` returns the selected committed registry entry and a fixed allowlist of current implementation files: prepare.py, counts.js, app.js, analysis-job.js, http.js, third_party/yolox.py and its YOLOX-LICENSE. No query or request path chooses a disk file. Failures return a controlled 503. This read-only route needs no prepared media and does not start inference or change saved schemas/retention. The native dialog renders code as text, traps focus through showModal, supports Escape/Close, restores focus, and aborts obsolete requests when closed or reopened.

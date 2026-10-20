@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createAnalysisManager, isLocalAnalysisRequest, videos } from './analysis-job.js';
@@ -7,6 +7,7 @@ const prefix = '/computer-vision/traffic-counter';
 const publicFiles = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/style.css', ['style.css', 'text/css; charset=utf-8']],
+  ['/source-viewer.js', ['source-viewer.js', 'text/javascript; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/videos.json', ['videos.json', 'application/json; charset=utf-8']],
   ['/counts.js', ['counts.js', 'text/javascript; charset=utf-8']],
@@ -36,7 +37,7 @@ export function createTrafficHandler(directory = fileURLToPath(new URL('.', impo
       res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'Content-Length': Buffer.byteLength(body) });
       res.end(body);
     };
-    const registered = pathname.slice(prefix.length).match(/^\/videos\/([a-z0-9-]+)\/(source\.mp4|annotated\.mp4|analysis\.json|analyze|analysis-status)$/);
+    const registered = pathname.slice(prefix.length).match(/^\/videos\/([a-z0-9-]+)\/(source\.mp4|annotated\.mp4|analysis\.json|analyze|analysis-status|implementation)$/);
     const videoId = registered ? registered[1] : 'shibuya';
     if (registered && !videos.some((video) => video.id === videoId)) { reply(404, { error: 'Unknown registered video.' }); return true; }
     const action = registered ? registered[2] : pathname.slice(prefix.length + 1);
@@ -54,6 +55,19 @@ export function createTrafficHandler(directory = fileURLToPath(new URL('.', impo
     if (!['GET', 'HEAD'].includes(req.method)) {
       res.writeHead(405, { Allow: 'GET, HEAD' });
       res.end();
+      return true;
+    }
+    if (registered && action === 'implementation') {
+      const entry = videos.find((video) => video.id === videoId);
+      // Names are fixed here; request paths never select files from disk.
+      const names = ['prepare.py', 'counts.js', 'app.js', 'analysis-job.js', 'http.js', 'third_party/yolox.py', 'third_party/YOLOX-LICENSE'];
+      try {
+        const files = [{ name: 'Selected video configuration', code: JSON.stringify(entry, null, 2) },
+          ...names.map((name) => ({ name, code: readFileSync(join(directory, name), 'utf8') }))];
+        const body = JSON.stringify({ videoId, title: entry.title, files });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Length': Buffer.byteLength(body) });
+        res.end(req.method === 'HEAD' ? undefined : body);
+      } catch { reply(503, { error: 'Implementation source is unavailable. Check the local checkout and retry.' }); }
       return true;
     }
     if (pathname === prefix) {

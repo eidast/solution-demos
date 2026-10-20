@@ -46,3 +46,5 @@ npm run check:secrets
 ```
 
 See [TECHNICAL.md](TECHNICAL.md) for schema v3, selection safety, the globally bounded worker, and per-video retention.
+
+The **View source code** button opens a keyboard-accessible modal for the selected video. Choose its registry configuration, Python detector/HUD pipeline, browser player/count logic, backend, or the YOLOX adapter and its license. These are the current local implementation files; every video uses the shared pipeline with its own configuration. Close or Escape returns to the demo.

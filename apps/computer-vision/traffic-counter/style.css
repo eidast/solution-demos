@@ -46,3 +46,17 @@ progress { accent-color: var(--mint); width: min(320px, 100%); }
 .video-picker { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 28px; color: var(--muted); font-size: .86rem; }
 select { max-width: 100%; padding: 12px; border-radius: 9px; border: 1px solid #43515c; background: #1b2a35; color: #f5f4ef; font: inherit; }
 select:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+.secondary { background: transparent; color: var(--mint); border: 1px solid var(--mint); }
+#sourceDialog { width: min(1100px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: clamp(14px, 3vw, 28px); border: 1px solid #43515c; border-radius: 16px; background: #1b2a35; color: #f5f4ef; overflow: auto; }
+#sourceDialog::backdrop { background: rgb(3 8 14 / .8); }
+.source-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.source-heading h2 { font-size: 1.2rem; margin: 8px 0; overflow-wrap: anywhere; }
+.source-heading button { flex-shrink: 0; }
+#sourceDescription, #sourceStatus { color: var(--muted); font-size: .8rem; line-height: 1.6; overflow-wrap: anywhere; }
+.source-file { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: .85rem; }
+.source-code { max-height: 48dvh; min-height: 100px; margin-bottom: 0; font-size: .78rem; tab-size: 4; white-space: pre; }
+.source-code:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+body:has(#sourceDialog[open]) { overflow: hidden; }
+
+@media (max-width: 480px) { .source-heading h2 { font-size: 1rem; margin: 0; } .source-heading button { padding: 9px 12px; } #sourceDescription, #sourceStatus { font-size: .73rem; margin: 10px 0; } .source-code { max-height: 38dvh; } }

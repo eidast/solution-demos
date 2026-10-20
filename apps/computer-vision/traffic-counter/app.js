@@ -1,3 +1,4 @@
+import { setupSourceViewer } from './source-viewer.js';
 import { frameAtTime, validateAnalysis } from './counts.js';
 
 const video = document.querySelector('#video');
@@ -16,6 +17,7 @@ let pendingSwitch = null;
 let processing = false;
 let epoch = 0;
 let pollingEpoch = null;
+setupSourceViewer(() => selected);
 const asset = (name, id = selected.id) => `videos/${encodeURIComponent(id)}/${name}`;
 
 function clearCounts() {
@@ -126,7 +128,7 @@ async function chooseVideo(id) {
   const choice = catalog.find((item) => item.id === id);
   if (!choice) return;
   const version = ++epoch;
-  selected = choice; analysis = undefined; pendingSwitch = null; processing = false;
+  selected = choice; document.querySelector('#viewSource').disabled = false; analysis = undefined; pendingSwitch = null; processing = false;
   picker.value = id; clearCounts(); toggle.checked = false; toggle.disabled = true;
   analyzeButton.disabled = true; analyzeButton.textContent = 'Analyze video'; progress.hidden = true;
   document.querySelector('#recovery').hidden = true;

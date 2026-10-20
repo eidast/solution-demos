@@ -84,3 +84,5 @@ Create an isolated folder under its capability in `apps/`, with a README describ
 ## License and credits
 
 Original code and documentation are [MIT licensed](LICENSE). Moral Machine portraits have [separate attribution and license scope](apps/jev/moral-machine/THIRD_PARTY_ASSETS.md). Computer vision footage uses CC BY 2.0 and CC BY 3.0; its detector weights and vendored adapter are Apache 2.0, as recorded in [their separate credits](apps/computer-vision/traffic-counter/THIRD_PARTY_ASSETS.md).
+
+The **View source code** button opens a keyboard-accessible modal for the selected video. Choose its registry configuration, Python detector/HUD pipeline, browser player/count logic, backend, or the YOLOX adapter and its license. These are the current local implementation files; every video uses the shared pipeline with its own configuration. Close or Escape returns to the demo.

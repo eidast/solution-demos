@@ -44,6 +44,11 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   writeFileSync(join(directory, 'data/san-francisco/source.mp4'), 'preserved');
   writeFileSync(join(directory, 'index.html'), '<title>Example</title>');
   writeFileSync(join(directory, 'data/shibuya', 'source.mp4'), '0123456789');
+  mkdirSync(join(directory, 'third_party'));
+  for (const name of ['prepare.py', 'counts.js', 'app.js', 'analysis-job.js', 'http.js', 'third_party/yolox.py', 'third_party/YOLOX-LICENSE']) {
+    writeFileSync(join(directory, name), `Public source: ${name} <script>literal text</script>`);
+  }
+  writeFileSync(join(directory, '.env'), 'PRIVATE_SENTINEL=never_expose');
   const handler = createTrafficHandler(directory);
   const server = http.createServer((req, res) => {
     if (!handler(req, res, new URL(req.url, 'http://localhost').pathname)) { res.writeHead(404); res.end(); }
@@ -58,6 +63,21 @@ test('traffic routes stream only fixed public files and explain unprepared outpu
   assert.equal((await fetch(base + '/')).status, 200);
   assert.equal(await (await fetch(base + '/videos/san-francisco/source.mp4')).text(), 'preserved');
   assert.equal((await fetch(base + '/videos/not-registered/source.mp4')).status, 404);
+  for (const id of ['san-francisco', 'shibuya', 'retail-najaf']) {
+    const source = await fetch(base + `/videos/${id}/implementation?file=.env`);
+    assert.equal(source.status, 200);
+    const implementation = await source.json();
+    assert.equal(implementation.videoId, id);
+    assert.equal(JSON.parse(implementation.files[0].code).id, id);
+    assert.equal(implementation.files.find((file) => file.name === 'prepare.py').code, 'Public source: prepare.py <script>literal text</script>');
+    assert.equal(implementation.files.length, 8);
+    assert.equal(JSON.stringify(implementation).includes('PRIVATE_SENTINEL'), false);
+  }
+  assert.equal((await fetch(base + '/videos/unknown/implementation')).status, 404);
+  assert.equal((await fetch(base + '/videos/shibuya/implementation', { method: 'POST' })).status, 405);
+  const sourceHead = await fetch(base + '/videos/shibuya/implementation', { method: 'HEAD' });
+  assert.equal(sourceHead.status, 200);
+  assert.equal(await sourceHead.text(), '');
   const clip = await fetch(base + '/source.mp4', { headers: { Range: 'bytes=2-5' } });
   assert.equal(clip.status, 206);
   assert.equal(clip.headers.get('content-range'), 'bytes 2-5/10');
